@@ -1,14 +1,14 @@
 (ns advent-of-code.day1
-  (:require [advent-of-code.utils :refer [read-file-list]]))
+  (:require [advent-of-code.utils :refer [read-file-segmented-list]]))
   
 
 (defn most-calories [resource]
-  (->> (read-file-list resource)
+  (->> (read-file-segmented-list resource)
        (map (partial reduce +))
        (apply max)))
 
 (defn top3-calories [resource]
-  (->> (read-file-list resource)
+  (->> (read-file-segmented-list resource)
        (map (partial reduce +))
        (sort >)
        (take 3)

@@ -46,7 +46,6 @@
 
 (defn guide-score [resource parse-line f-calc-score]
   (->> (read-file-list resource (partial read-guide-line parse-line))
-       (first)
        (map #(apply f-calc-score %))
        (reduce +)))
 

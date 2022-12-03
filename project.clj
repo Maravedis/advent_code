@@ -2,4 +2,5 @@
   :description "The 2022 advent of code event"
   :dependencies [[org.clojure/clojure "1.11.1"]]
   :resource-paths ["resources"]
-  :profiles {:dev {:source-paths ["test" "dev"]}})
+  :profiles {:dev {:source-paths   ["test" "dev"]
+                   :resource-paths ["dev-resources"]}})
