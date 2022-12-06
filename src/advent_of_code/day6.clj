@@ -11,7 +11,9 @@
             (some? j) (recur r (+ i 1) (str (subs acc (+ 1 j)) a))
             :else (recur r (+ i 1) (str acc a))))))
 
-(defn find-unique-alternative [input length] ; I realized after finishing you can put a step to partition
+; I realized after finishing you can put a step to partition
+; This is way simpler but takes ~10x the time
+(defn find-unique-alternative [input length] 
   (->> input
        (partition length 1)
        (map (comp count set))
@@ -20,11 +22,14 @@
        first
        (apply +)))
 
-(defn run [resource length]
+(defn run [resource length fn]
   (-> (slurp (io/resource resource))
-      (find-unique length)))
+      (fn length)))
+
 
 (comment
-  (run "day6" 4)
-  (run "day6" 14)
+  (time (run "day6" 4 find-unique))
+  (time (run "day6" 4 find-unique-alternative))
+  (time (run "day6" 14 find-unique))
+  (time (run "day6" 14 find-unique-alternative))
   )
