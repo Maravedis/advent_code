@@ -1,0 +1,13 @@
+$ cd /
+$ ls
+dir a
+123 b.txt
+478 c.dat
+dir d
+$ cd a
+2819 k.t
+9823 hjksdh
+$ cd ..
+$ cd d
+$ ls
+123 loiu.clj
