@@ -20,6 +20,21 @@
     (or (>= x-col col) (<= y-col col)
         (>= x-row row) (<= y-row row))))
 
+(defn calc-vision-1d [line idx]
+  (let [tree      (get line idx)
+        after     (drop (+ 1 idx) line)
+        before    (reverse (take idx line))
+        vision-fn (fn [coll]
+                    (let [[a [h]] (split-with #(< % tree) coll)]
+                      (cond-> (count a)
+                        (and (some? h) (>= h tree)) (+ 1))))]
+    (* (vision-fn before)
+       (vision-fn after))))
+
+(defn calc-vision [cluster row col]
+  (* (calc-vision-1d (get cluster row) col)
+     (calc-vision-1d (mapv #(get % col) cluster) row)))
+
 (defn count-visible [resource]
   (let [cluster (vec (u/read-file-list resource read-height-line))]
        (count (for [row (range (count cluster))
@@ -27,7 +42,13 @@
                     :when (is-visible? cluster row col)]
                 1))))
 
+(defn find-highest-vision [resource]
+  (let [cluster (vec (u/read-file-list resource read-height-line))]
+    (apply max (for [row (range (count cluster))
+                     col (range (count (first cluster)))]
+                 (calc-vision cluster row col)))))
+
 (comment
   (count-visible "day8")
-  
+  (find-highest-vision "day8")
   )
