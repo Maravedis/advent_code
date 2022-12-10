@@ -4,10 +4,6 @@
 (defn read-height-line [line]
   (mapv #(- (int %) 0x30) line))
 
-(defn count-outer [cluster]
-  (+ (count cluster)
-     (count (first cluster))))
-
 (defn bi-max [x args]
   (let [as         (map-indexed vector args)
         find-index (fn [coll] (ffirst (drop-while #(< (second %) x) coll)))]
