@@ -1,7 +1,6 @@
 (ns advent-of-code.day12
-  (:require [advent-of-code.utils :as u]
-            [clojure.string :refer [split-lines]]
-            [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io]
+            [clojure.string :refer [split-lines]]))
 
 (defn parse-height [c]
   (if (Character/isUpperCase c)
