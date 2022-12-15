@@ -46,10 +46,7 @@
 
 (defn part2 [path rows]
   (let [input (u/read-file-list path read-sensor-beacon)]
-    (->> (for [y (range (inc rows))]
-           (->> input
-                (calc-segments y)))
-         (map-indexed vector)
+    (->> (pmap (fn [y] [y (calc-segments y input)]) (range (inc rows)))
          (drop-while (fn [[_ [[_ x] & r]]]
                        (not (and (some? r)
                                  (<= 0 x rows)))))
