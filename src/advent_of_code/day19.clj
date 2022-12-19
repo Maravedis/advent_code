@@ -1,11 +1,8 @@
 (ns advent-of-code.day19
-  (:require [advent-of-code.utils :as u]
-            [clojure.string :as str]))
+  (:require [advent-of-code.utils :as u]))
 
 (defn read-blueprint [line]
-  (->> (str/split line #"[:\.]? ")
-       (keep-indexed (fn [idx x] (when (contains? #{6 12 18 21 27 30} idx) (read-string x))))
-       vec))
+  (->> (u/nums line) (drop 1) vec))
 
 (defn fix [f] (fn g [& args] (apply f g args))) ; fix inline memoization, thanks stack overflow
 
@@ -84,7 +81,8 @@
        (reduce *)))
 
 
-(comment
-
+(comment 
+  
   (time (part1 "day19"))
-  (time (part2 "day19")))
+  (time (part2 "day19"))
+  )

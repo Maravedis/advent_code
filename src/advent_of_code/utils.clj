@@ -22,6 +22,9 @@
 (defn sum [coll]
   (apply + coll))
 
+(defn nums [string]
+  (map read-string (re-seq #"\d+" string)))
+
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn tprint [x]
   (pprint x)
