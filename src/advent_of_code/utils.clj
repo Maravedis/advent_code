@@ -22,6 +22,7 @@
 (defn sum [coll]
   (apply + coll))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn tprint [x]
   (pprint x)
   x)
