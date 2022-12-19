@@ -73,14 +73,14 @@
 
 (defn part1 [path]
   (->> (u/read-file-list path read-blueprint)
-       (map (partial calc-geodes 24))
+       (pmap (partial calc-geodes 24))
        (map-indexed (fn [idx i] (* (inc idx) i)))
        (reduce +)))
 
 (defn part2 [path]
   (->> (u/read-file-list path read-blueprint)
        (take 3)
-       (map (partial calc-geodes 32))
+       (pmap (partial calc-geodes 32))
        (reduce *)))
 
 
