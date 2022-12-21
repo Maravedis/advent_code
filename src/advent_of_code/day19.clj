@@ -4,8 +4,6 @@
 (defn read-blueprint [line]
   (->> (u/nums line) (drop 1) vec))
 
-(defn fix [f] (fn g [& args] (apply f g args))) ; fix inline memoization, thanks stack overflow
-
 (defn calc-geodes [minutes blueprint]
   (let [max_clay  (blueprint 3)
         max_ore   (max (blueprint 0) (blueprint 1) (blueprint 2) (blueprint 4))
@@ -65,7 +63,7 @@
                                    (+ obs obs-r)
                                    (+ geodes geo-r)
                                    ore-r clay-r obs-r geo-r (inc minute)))))
-        dfs-m     (fix (memoize dfs))]
+        dfs-m     (u/fix (memoize dfs))]
     (dfs-m 0 0 0 0 1 0 0 0 0)))
 
 (defn part1 [path]

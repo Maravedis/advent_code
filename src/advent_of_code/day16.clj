@@ -50,9 +50,6 @@
                                     [hi hj]
                                     #(min % (+ (get-in dist [hi hk]) (get-in dist [hk hj])))))))))
 
-(defn fix [f] (fn g [& args] (apply f g args))) ; fix inline memoization, thanks stack overflow
-
-
 (defn run [path part2?]
   (let [input (->> (u/read-file-list path read-valve)
                    (into {})
@@ -69,7 +66,7 @@
                                   time-left (- minutes d)]
                               (+ (* time-left rate) (dfs node time-left (conj opened valve) first?)))))
                      (reduce max (if first? (dfs "AA" time (conj opened valve) false) 0)))) 
-        dfs-m (fix (memoize dfs))]
+        dfs-m (u/fix (memoize dfs))]
     (dfs-m "AA" time #{"AA"} part2?)))
   
 (comment

@@ -25,6 +25,8 @@
 (defn nums [string]
   (map read-string (re-seq #"\d+" string)))
 
+(defn fix [f] (fn g [& args] (apply f g args))) ; fix inline memoization, thanks stack overflow
+
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn tprint [x]
   (pprint x)
