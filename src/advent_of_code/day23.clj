@@ -22,13 +22,17 @@
         :when (not= 0 i j)]
     [(+ x i) (+ y j)]))
 
-(defn make-proposition [[row col :as elf] grove [h & t]]
-  (if (or (nil? h) (not-any? #(contains? grove %) (adj elf))) 
+(defn make-proposition [elf grove orientation]
+  (if (not-any? #(contains? grove %) (adj elf))
     nil
-    (let [to-check (map (fn [[rc cc]] [(+ row rc) (+ col cc)]) (checks h))]
-      (if (some #(contains? grove %) to-check)
-        (recur elf grove t)
-        [(+ row (first h)) (+ col (second h))]))))
+    (loop [[row col] elf
+           [h & t]   orientation]
+      (if  (nil? h)  
+        nil
+        (let [to-check (map (fn [[rc cc]] [(+ row rc) (+ col cc)]) (checks h))]
+          (if (some #(contains? grove %) to-check)
+            (recur elf t)
+            [(+ row (first h)) (+ col (second h))]))))))
 
 (defn calc-rectangle [grove]
   (let [[minr maxr] (apply (juxt min max) (map first grove))
@@ -57,6 +61,7 @@
             (recur (apply conj (apply disj grove to-remove) to-add) (rest o) (inc i))))))))
 
 (comment 
-  (run "day23" true)
-  (run "day23" false)
+  (time (run "day23" true))
+  (time (run "day23" false))
+  (#{1 2} 3)
   )
