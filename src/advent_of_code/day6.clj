@@ -12,15 +12,14 @@
             :else (recur r (+ i 1) (str acc a))))))
 
 ; I realized after finishing you can put a step to partition
-; This is way simpler but takes ~10x the time
-(defn find-unique-alternative [input length] 
+; This is way simpler but takes ~2x the time
+(defn find-unique-alternative [input length]
   (->> input
        (partition length 1)
-       (map (comp count set))
-       (map-indexed vector)
-       (sort-by second >)
-       first
-       (apply +)))
+       (map (comp count distinct))
+       (take-while #(not= length %))
+       count
+       (+ length)))
 
 (defn run [resource length fn]
   (-> (slurp (io/resource resource))

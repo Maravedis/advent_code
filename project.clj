@@ -6,5 +6,6 @@
                  [com.rpl/specter "1.1.4"]
                  [org.clojure/core.rrb-vector "0.1.2"]]
   :resource-paths ["resources"]
+  :jvm-opts ["-Xss500M"]
   :profiles {:dev {:source-paths   ["test" "dev"]
                    :resource-paths ["dev-resources"]}})
