@@ -42,16 +42,13 @@
         top       [-1 0]
         bot       [h (dec w)]
         states    (iterate update-blizzards blizzards)
-        queue     (atom #{})
         bfs      (fn [start end minute]
-                    (reset! queue #{start})
-                    (loop [minute minute]
-                      (let [all-pos @queue]
-                        (if (all-pos end)
-                          minute
-                          (let [canvas (first (drop (inc minute) states))]
-                            (reset! queue (set (mapcat #(neighbors % h w canvas) all-pos)))
-                            (recur (inc minute)))))))]
+                    (loop [minute  minute
+                           all-pos #{start}]
+                      (if (all-pos end)
+                        minute
+                        (let [canvas (first (drop (inc minute) states))]
+                          (recur (inc minute) (set (mapcat #(neighbors % h w canvas) all-pos)))))))]
     (if part1?
       (bfs top bot 0)
       (->> (bfs top bot 0)
