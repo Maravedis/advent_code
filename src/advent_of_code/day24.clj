@@ -35,34 +35,32 @@
                                 (or (< r 0) (>= r h) (< c 0) (>= c w)))))
        (remove #(not-empty (get-in canvas %)))))
 
-(defn run [path m part1?]
+(defn run [path part1?]
   (let [blizzards (read-blizzards path)
         h         (count blizzards)
         w         (count (first blizzards))
-        top [-1 0]
-        bot [h (dec w)]
-        states    (iterate update-blizzards blizzards) 
-        move      (fn [move pos end minute]
-                    (if (or (= pos end) (> minute m))
-                      minute
-                      (let [canvas (first (drop (inc minute) states))
-                            ns     (neighbors pos h w canvas)]
-                        (if (empty? ns)
-                          m
-                          (apply min (map #(move % end (inc minute)) ns))))))
-        move-m    (u/fix (memoize move))]
+        top       [-1 0]
+        bot       [h (dec w)]
+        states    (iterate update-blizzards blizzards)
+        queue     (atom #{})
+        bfs      (fn [start end minute]
+                    (reset! queue #{start})
+                    (loop [minute minute]
+                      (let [all-pos @queue]
+                        (if (all-pos end)
+                          minute
+                          (let [canvas (first (drop (inc minute) states))]
+                            (reset! queue (set (mapcat #(neighbors % h w canvas) all-pos)))
+                            (recur (inc minute)))))))]
     (if part1?
-      (move-m top bot 0) 
-      (->> (move-m top bot 0)
-           (move-m bot top)
-           (move-m top bot)))))
-
+      (bfs top bot 0)
+      (->> (bfs top bot 0)
+           (bfs bot top)
+           (bfs top bot)))))
 
 
 
 (comment 
-  ; 300 and 800 are just there to stop at a decent point
-  ; otherwise you could just wait at the start forever.
-  (time (run "day24" 300 true))
-  (time (run "day24" 800 false))
+  (time (run "day24" true))
+  (time (run "day24" false)) 
   )
