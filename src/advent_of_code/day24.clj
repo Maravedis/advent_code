@@ -1,7 +1,7 @@
 (ns advent-of-code.day24
-  (:require [advent-of-code.utils :as u]
-            [clojure.java.io :as io]
-            [clojure.string :as str]))
+  (:require [clojure.java.io :as io]
+            [clojure.string :as str]
+            [clojure.math.numeric-tower :refer [lcm]]))
 
 (defn read-blizzards [path]
   (->> (slurp (io/resource path))
@@ -35,29 +35,28 @@
                                 (or (< r 0) (>= r h) (< c 0) (>= c w)))))
        (remove #(not-empty (get-in canvas %)))))
 
-(defn run [path part1?]
+(defn run [path]
   (let [blizzards (read-blizzards path)
         h         (count blizzards)
         w         (count (first blizzards))
         top       [-1 0]
         bot       [h (dec w)]
-        states    (iterate update-blizzards blizzards)
+        states    (cycle (take (lcm h w) (iterate update-blizzards blizzards)))
         bfs      (fn [start end minute]
                     (loop [minute  minute
                            all-pos #{start}]
                       (if (all-pos end)
                         minute
                         (let [canvas (first (drop (inc minute) states))]
-                          (recur (inc minute) (set (mapcat #(neighbors % h w canvas) all-pos)))))))]
-    (if part1?
-      (bfs top bot 0)
-      (->> (bfs top bot 0)
-           (bfs bot top)
-           (bfs top bot)))))
+                          (recur (inc minute) (set (mapcat #(neighbors % h w canvas) all-pos)))))))
+        part1 (bfs top bot 0)
+        part2 (->> part1
+                   (bfs bot top)
+                   (bfs top bot))]
+    [part1 part2]))
 
 
 
 (comment 
-  (time (run "day24" true))
-  (time (run "day24" false)) 
+  (time (run "day24")) 
   )
