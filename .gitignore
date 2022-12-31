@@ -1,2 +1,4 @@
 .nrepl-port
 target
+inputs/
+test-inputs
