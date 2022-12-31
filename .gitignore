@@ -2,3 +2,4 @@
 target
 inputs/
 test-inputs
+.SESSION_ID

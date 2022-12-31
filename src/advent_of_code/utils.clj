@@ -1,7 +1,8 @@
 (ns advent-of-code.utils
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]))
+            [clojure.pprint :refer [pprint]]
+            [clj-http.client :as http]))
 
 (defn read-file-list
   ([resource] (read-file-list resource read-string))
@@ -31,3 +32,11 @@
 (defn tprint [x]
   (pprint x)
   x)
+
+(defn get-input 
+  ([year day] (get-input year day (slurp ".SESSION_ID")))
+  ([year day session-id]
+   (->> (http/get (str "https://adventofcode.com/" year "/day/" day "/input")
+                  {:headers {:cookie (str "session=" session-id)}})
+        :body
+        (spit (str "inputs/" year "/" day ".in")))))
