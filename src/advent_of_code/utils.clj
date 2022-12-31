@@ -20,6 +20,9 @@
           (map str/split-lines)
           (map #(map modifier-fn %))))))
 
+(defn count-if [pred coll]
+  (count (keep #(when (pred %) %) coll)))
+
 (defn sum [coll]
   (apply + coll))
 
