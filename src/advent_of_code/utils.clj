@@ -42,4 +42,5 @@
    (->> (http/get (str "https://adventofcode.com/" year "/day/" day "/input")
                   {:headers {:cookie (str "session=" session-id)}})
         :body
-        (spit (str "inputs/" year "/" day ".in")))))
+        (spit (str "inputs/" year "/" day ".in")))
+   (str year "/" day ".in")))
