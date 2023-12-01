@@ -44,3 +44,5 @@
         :body
         (spit (str "inputs/" year "/" day ".in")))
    (str year "/" day ".in")))
+
+ 

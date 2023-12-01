@@ -7,6 +7,8 @@
                  [org.clojure/core.rrb-vector "0.1.2"]
                  [org.clojure/math.numeric-tower "0.0.5"]
                  [clj-http "3.12.3"]
+                 [clojure.java-time "1.2.0"]
+                 [cheshire "5.11.0"]
                  [org.clj-commons/digest "1.4.100"]] 
   :resource-paths ["resources" "inputs"]
   :jvm-opts ["-Xss500M"]
