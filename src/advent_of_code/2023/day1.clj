@@ -2,48 +2,28 @@
   (:require [advent-of-code.utils :as u]
             [clojure.string :as str]))
 
-(defn ->number [line]
-  (let [arr (->> line
-                 seq
-                 (map #(Character/digit % 10))
-                 (remove neg?))]
-    (+ (* 10 (first arr)) (last arr))))
+(def reg (re-pattern (str "^" (str/join "|^" (keys u/digit-map)))))
 
-(def spelled-map {"one"   1
-                  "two"   2
-                  "three" 3
-                  "four"  4
-                  "five"  5
-                  "six"   6
-                  "seven" 7
-                  "eight" 8
-                  "nine"  9})
+(defn find-first-occurence [input parse-fn] 
+  (loop [[h & t] input]
+    (if-let [res (parse-fn h)]
+      res
+      (recur t))))
 
-(def spelled (keys spelled-map))
+(defn ->digit [[h]] (u/char->digit h))
+(defn ->number [l] (or (->digit l) (u/digit-map (re-find reg l))))
 
-(defn read-number [line]
-  (loop [[h & t :as l] (seq line)
-         res           []]
-    (if (nil? h)
-      (+ (* 10 (first res)) (last res))
-      (let [dig (Character/digit h 10)
-            sp  (reduce (fn [_ k]
-                          (when (str/starts-with? (apply str l) k)
-                            (reduced (spelled-map k)))) nil spelled)]
-        (cond (> dig 0) (recur t (conj res dig))
-              sp (recur t (conj res sp))
-              :else (recur t res))))))
+(defn first-and-last [f line]
+  (let [l     (count line)
+        first (find-first-occurence (for [i (range 0 l)] (subs line i l)) f) 
+        last  (find-first-occurence  (for [i (range (dec l) -1 -1)] (subs line i l)) f)] 
+    (+ (* 10 first) last)))
 
-(defn part1 [path]
-  (->> (u/read-file-list path ->number)
-       u/sum))
-
-(defn part2 [path]
-  (->> (u/read-file-list path read-number)
-       u/sum))
+(defn gen-solve [path f]
+  (->> (u/read-file-list path (partial first-and-last f)) 
+       (apply +)))
 
 (comment
-  (u/get-input 2023 1)
-  (part1 "2023/1.in")
-  (part2 "2023/1.in")
+  (time (gen-solve "2023/1.in" ->digit))
+  (time (gen-solve "2023/1.in" ->number))
   )
