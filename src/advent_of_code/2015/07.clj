@@ -1,7 +1,6 @@
 (ns advent-of-code.2015.07
   (:require [advent-of-code.utils :as u]
-            [clojure.string :as str]
-            [clojure.java.io :as io]))
+            [clojure.string :as str]))
 
 (defn read-instruction [line]
   (let [[h i j k] (str/split line #" (-> )?")]
