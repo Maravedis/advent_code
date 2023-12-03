@@ -16,7 +16,7 @@
 (defn first-and-last [f line]
   (let [l     (count line)
         first (find-first-occurence (for [i (range 0 l)] (subs line i l)) f) 
-        last  (find-first-occurence  (for [i (range (dec l) -1 -1)] (subs line i l)) f)] 
+        last  (find-first-occurence (for [i (range (dec l) -1 -1)] (subs line i l)) f)] 
     (+ (* 10 first) last)))
 
 (defn gen-solve [path f]
