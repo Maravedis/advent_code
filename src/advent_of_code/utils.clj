@@ -31,6 +31,11 @@
 (defn sum [coll]
   (apply + coll))
 
+(defn dec0 [x] (max 0 (dec x)))
+
+(defn between [coll pred]
+  (->> coll (drop-while (complement pred)) (take-while pred)))
+
 (defn nums [string]
   (map read-string (re-seq #"\d+" string)))
 
@@ -41,7 +46,7 @@
   (loop [m   (re-matcher re s)
          res ()]
     (if (.find m)
-      (recur m (cons (list (.start m) (.group m)) res))
+      (recur m (cons [(.start m) (.group m)] res))
       (reverse res))))
 
 (defn fix [f] (fn g [& args] (apply f g args))) ; fix inline memoization, thanks stack overflow

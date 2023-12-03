@@ -1,21 +1,27 @@
 (ns advent-of-code.2023.day3
-  (:require [advent-of-code.utils :as u]))
+  (:require [advent-of-code.utils :as u]
+            [criterium.core :refer [quick-bench]]))
 
 (defn read-schematics [path]
   (loop [[line & t] (u/read-file-list path identity)
          i          0
-         nums       {}
+         nums       []
          syms       {}]
     (if (nil? line)
       [nums syms]
-      (let [n (->> (u/re-pos #"\d+" line)
-                   (map (fn [[j num]] [[i j (count num)] (read-string num)])))
+      (let [n (u/re-pos #"\d+" line)
             s (->> (u/re-pos #"[^\.\d]" line)
                    (map (fn [[j sym]] [[i j] sym])))]
-        (recur t (inc i) (into nums n) (into syms s))))))
+        (recur t (inc i) (conj nums n) (concat syms s))))))
 
 (defn in-nums [nums i j]
-  (keep (fn [[[x y l] num]] (when (and (<= (dec i) x (inc i)) (<= (dec y) j (+ y l))) num)) nums))
+  (->> (subvec nums (u/dec0 i) (min (+ i 2) (count nums)))
+       (map #(u/between % (fn [[y]] (<= (max 0 (- j 4)) y (min (+ j 4))))))
+       (apply concat)
+       (reduce (fn [res [y num]]
+                 (if (<= (dec y) j (+ y (count num)))
+                   (conj res (parse-long num))
+                   res)) [])))
 
 (defn part1 [path]
   (let [[nums syms] (read-schematics path)]
@@ -31,8 +37,7 @@
                   (if (= 2 (count out)) (+ result (apply * out)) result))
                 result)) 0 syms)))
 
-
 (comment 
-  (time (part1 "2023/3.in")) 
-  (time (part2 "2023/3.in"))
+  (quick-bench (part1 "2023/3.in")) ; ~7.5ms
+  (quick-bench (part2 "2023/3.in")) ; ~6.6ms
   )
