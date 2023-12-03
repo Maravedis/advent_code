@@ -24,26 +24,9 @@
   (count (keep #(when (pred %) %) coll)))
 
 
-(def char->digit {\1 1
-                  \2 2
-                  \3 3
-                  \4 4
-                  \5 5
-                  \6 6
-                  \7 7
-                  \8 8
-                  \9 9
-                  \0 0})
+(def char->digit {\1 1 \2 2 \3 3 \4 4 \5 5 \6 6 \7 7 \8 8 \9 9 \0 0})
 
-(def digit-map {"one"   1
-                "two"   2
-                "three" 3
-                "four"  4
-                "five"  5
-                "six"   6
-                "seven" 7
-                "eight" 8
-                "nine"  9})
+(def digit-map {"one" 1 "two" 2 "three" 3 "four" 4 "five" 5 "six" 6 "seven" 7 "eight" 8 "nine" 9})
 
 (defn sum [coll]
   (apply + coll))
@@ -51,10 +34,20 @@
 (defn nums [string]
   (map read-string (re-seq #"\d+" string)))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
+(defn re-pos
+  "Return a list of pairs of (index, string) for all matches of `re` in `s`"
+  [re s]
+  (loop [m   (re-matcher re s)
+         res ()]
+    (if (.find m)
+      (recur m (cons (list (.start m) (.group m)) res))
+      (reverse res))))
+
 (defn fix [f] (fn g [& args] (apply f g args))) ; fix inline memoization, thanks stack overflow
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(defn tprint [x]
+(defn tee [x]
   (pprint x)
   x)
 
