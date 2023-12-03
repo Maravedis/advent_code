@@ -3,16 +3,11 @@
             [criterium.core :refer [quick-bench]]))
 
 (defn read-schematics [path]
-  (loop [[line & t] (u/read-file-list path identity)
-         i          0
-         nums       []
-         syms       {}]
-    (if (nil? line)
-      [nums syms]
-      (let [n (u/re-pos #"\d+" line)
-            s (->> (u/re-pos #"[^\.\d]" line)
-                   (map (fn [[j sym]] [[i j] sym])))]
-        (recur t (inc i) (conj nums n) (concat syms s))))))
+  (reduce-kv (fn [[nums syms] i line]
+               [(conj nums (u/re-pos #"\d+" line))
+                (concat syms (map (fn [[j sym]] [[i j] sym]) (u/re-pos #"[^\.\d]" line)))])
+             [[] []] (vec (u/read-file-list path identity))))
+
 
 (defn in-nums [nums i j]
   (->> (subvec nums (u/dec0 i) (min (+ i 2) (count nums)))
@@ -37,7 +32,7 @@
                   (if (= 2 (count out)) (+ result (apply * out)) result))
                 result)) 0 syms)))
 
-(comment 
+(comment
   (quick-bench (part1 "2023/3.in")) ; ~7.5ms
   (quick-bench (part2 "2023/3.in")) ; ~6.6ms
   )
