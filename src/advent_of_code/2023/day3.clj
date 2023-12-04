@@ -1,6 +1,5 @@
 (ns advent-of-code.2023.day3
-  (:require [advent-of-code.utils :as u]
-            [criterium.core :refer [quick-bench]]))
+  (:require [advent-of-code.utils :as u]))
 
 (defn read-schematics [path]
   (reduce-kv (fn [[nums syms] i line]
@@ -33,6 +32,6 @@
                 result)) 0 syms)))
 
 (comment
-  (quick-bench (part1 "2023/3.in")) ; ~7.5ms
-  (quick-bench (part2 "2023/3.in")) ; ~6.6ms
+  (part1 "2023/3.in") ; ~7.5ms
+  (part2 "2023/3.in") ; ~6.6ms
   )
