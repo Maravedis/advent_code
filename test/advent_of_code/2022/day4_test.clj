@@ -1,4 +1,4 @@
-(ns 2022.day4-test
+(ns advent-of-code.2022.day4-test
   (:require [advent-of-code.2022.day4 :refer :all]
             [clojure.test :refer :all]))
 
@@ -25,5 +25,5 @@
     false 1 3 4 7))
 
 (deftest count-pairs-test
-  (is (= 2 (count-pairs "day4_test" enclosed?)))
-  (is (= 4 (count-pairs "day4_test" overlap?))))
+  (is (= 2 (count-pairs "2022/day4_test" enclosed?)))
+  (is (= 4 (count-pairs "2022/day4_test" overlap?))))

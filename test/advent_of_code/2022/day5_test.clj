@@ -1,4 +1,4 @@
-(ns 2022.day5-test
+(ns advent-of-code.2022.day5-test
   (:require [advent-of-code.2022.day5 :refer :all]
             [clojure.test :refer :all]))
 
@@ -32,7 +32,7 @@
                 [3 1 3]
                 [2 2 1]
                 [1 1 2]]}
-         (parse-input "day5_test"))))
+         (parse-input "2022/day5_test"))))
 
 (deftest move-test
   (is (= 
@@ -49,5 +49,5 @@
                 [1 1 2]]))))
 
 (deftest execute-test
-  (is (= "CMZ" (execute "day5_test" false)))
-  (is (= "MCD" (execute "day5_test" true))))
+  (is (= "CMZ" (execute "2022/day5_test" false)))
+  (is (= "MCD" (execute "2022/day5_test" true))))

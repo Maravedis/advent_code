@@ -1,4 +1,4 @@
-(ns 2022.day8-test
+(ns advent-of-code.2022.day8-test
   (:require [clojure.test :refer :all]
             [advent-of-code.2022.day8 :refer :all]))
 
@@ -42,7 +42,7 @@
     8 3 2))
 
 (deftest count-visible-test
-  (is (= 21 (count-visible "day8_test"))))
+  (is (= 21 (count-visible "2022/day8_test"))))
 
 (deftest find-highest-vision-test
-  (is (= 8 (find-highest-vision "day8_test"))))
+  (is (= 8 (find-highest-vision "2022/day8_test"))))

@@ -1,4 +1,4 @@
-(ns 2022.day3-test
+(ns advent-of-code.2022.day3-test
   (:require [clojure.test :refer :all]
             [advent-of-code.2022.day3 :refer :all]))
 
@@ -17,7 +17,7 @@
     [#{1 2 3 15} #{27 52 47 46 28 41}] (->compartments "babacocoAZUTAZBO")))
 
 (deftest priority-test
-  (is (= 157 (priority "day3_test"))))
+  (is (= 157 (priority "2022/day3_test"))))
 
 (deftest badge-test
-  (is (= 70 (badge "day3_test"))))
+  (is (= 70 (badge "2022/day3_test"))))
