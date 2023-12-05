@@ -38,7 +38,7 @@
   (->> coll (drop-while (complement pred)) (take-while pred)))
 
 (defn nums [string]
-  (map read-string (re-seq #"\d+" string)))
+  (map parse-long (re-seq #"\d+" string)))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn re-pos
