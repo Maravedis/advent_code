@@ -1,4 +1,4 @@
-(ns advent-of-code.2023.day1
+(ns advent-of-code.2023.01
   (:require [advent-of-code.utils :as u]))
 
 (defn part1 [path]

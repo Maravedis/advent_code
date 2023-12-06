@@ -1,4 +1,4 @@
-(ns advent-of-code.2023.day2
+(ns advent-of-code.2023.02
   (:require [advent-of-code.utils :as u]
             [clojure.string :refer [split]]))
 

@@ -1,4 +1,4 @@
-(ns advent-of-code.2023.day5
+(ns advent-of-code.2023.05
   (:require [advent-of-code.utils :as u]
             [clojure.java.io :as io]
             [clojure.string :as str]))

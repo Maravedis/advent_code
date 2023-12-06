@@ -1,4 +1,4 @@
-(ns advent-of-code.2023.day3
+(ns advent-of-code.2023.03
   (:require [advent-of-code.utils :as u]))
 
 (defn read-schematics [path]

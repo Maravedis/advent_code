@@ -1,4 +1,4 @@
-(ns advent-of-code.2023.day4
+(ns advent-of-code.2023.04
   (:require [advent-of-code.utils :as u]
             [clojure.math :refer [pow]]))
 
