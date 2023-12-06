@@ -13,21 +13,21 @@
 (defn gen-solve [path part2?]
   (let [[seeds maps] (read-almanach path)]
     (loop [[sh & st :as steps] maps
-           [h & t :as ss]      (apply sorted-set (if part2? (map vec (partition 2 seeds)) (map (fn [seed] [seed 1]) seeds)))
-           next-step           (sorted-set)]
+           ss                  (apply sorted-map (if part2? seeds (interleave seeds (repeat 1))))
+           next-step           (sorted-map)]
       (if-let [[[d sx r] & ms] sh]
-        (if-let [[ax l] h]
+        (if-let [[ax l] (first ss)]
           (let [ay (+ ax l)
                 sy (+ sx r)]
             (cond
               (and (> ax sy) ms) (recur (cons ms st) ss next-step)
-              (> ax sy)  (recur st (apply conj next-step ss) (sorted-set))
-              (<= ay sy) (recur steps t (conj next-step [(+ d (- ax sx)) l]))
-              :else (recur (cons ms st) (conj t [sy (- ay sy)]) (conj next-step [(+ d (- ax sx)) (- sy ax)]))))
-          (recur st next-step (sorted-set)))
-        (apply min (map first ss))))))
+              (> ax sy)  (recur st (apply conj next-step ss) (sorted-map))
+              (<= ay sy) (recur steps (dissoc ss ax) (assoc next-step (+ d (- ax sx)) l))
+              :else (recur (cons ms st) (assoc (dissoc ss ax) sy (- ay sy)) (assoc next-step (+ d (- ax sx)) (- sy ax)))))
+          (recur st next-step (sorted-map)))
+        (ffirst ss)))))
 
-(comment
-  (gen-solve "2023/5.in" false) ; ~740µs
-  (gen-solve "2023/5.in" true)  ; ~1.1ms
+(comment 
+  (gen-solve "2023/5.in" false) ; ~705µs
+  (gen-solve "2023/5.in" true)  ; ~1.0ms
   )
