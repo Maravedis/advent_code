@@ -8,9 +8,7 @@
 (defn compare-cards [dict x y] (- (get dict y) (get dict x)))
 
 (defn classify-hand [hand part2?]
-  (let [grouped       (->> (group-by identity hand)
-                           (map (fn [[k v]] [k (count v)]))
-                           (into {}))
+  (let [grouped       (frequencies hand)
         [[_ m] [_ n]] (->> (if part2? (dissoc grouped \J) grouped)
                            (sort-by second >))
         m             (+ (if-let [j (and part2? (grouped \J))] j 0) (if m m 0))]
@@ -26,9 +24,8 @@
 (defn compare-hands [part2? l r]
   (let [comp (- (classify-hand l part2?) (classify-hand r part2?))]
     (if (= comp 0)
-      (->> (map (partial compare-cards (if part2? order-cards-2 order-cards)) l r ) (drop-while #(= 0 %)) first)
-      comp))
-  )
+      (->> (map (partial compare-cards (if part2? order-cards-2 order-cards)) l r) (drop-while #(= 0 %)) first)
+      comp)))
 
 (defn gen-solve [path part2?]
   (let [hands (u/read-file-list path #(str/split % #" "))]
