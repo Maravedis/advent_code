@@ -23,22 +23,24 @@
   (->> (u/read-file-list path read-instruction)
        (into {})))
 
-(defn execute-circuit [instructions a]
-  (println a)
-  (let [curr (instructions a)
-        arg-fn (fn [x] (if (or (nil? x) (int? x)) x (execute-circuit instructions x)))]
-    (cond (map? curr) (bit-and 0xFFFF ((:op curr) (arg-fn (curr :l)) (arg-fn (curr :r))))
-          (keyword? curr) (execute-circuit instructions curr)
-          :else curr)))
+(defn run [instructions k]
+  (let [ec-fn        (fn [dfs a]
+                       (let [curr   (instructions a)
+                             arg-fn (fn [x] (if (or (nil? x) (int? x)) x (dfs x)))]
+                         (cond (map? curr) (bit-and 0xFFFF ((:op curr) (arg-fn (curr :l)) (arg-fn (curr :r))))
+                               (keyword? curr) (dfs curr)
+                               :else curr)))
+        ec-m         (u/fix (memoize ec-fn))]
+    (ec-m k)))
 
-(defn run [path k]
+(defn part1 [path]
+  (run (parse-circuit path) :a))
+
+(defn part2 [path]
   (let [instructions (parse-circuit path)]
-    (execute-circuit instructions k) )
-  )
-(comment
+    (run (assoc instructions :b (run instructions :a)) :a)))
 
-  (def path (u/get-input 2015 7))
-  (def test-path "2015/day7_test")
-  (run path :a)
-  (filter #(nil? (:l (second %))) (parse-circuit path))
+(comment 
+  (part1 "2015/7.in")
+  (part2 "2015/7.in")
   )

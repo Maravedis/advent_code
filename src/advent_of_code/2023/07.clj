@@ -2,8 +2,8 @@
   (:require [advent-of-code.utils :as u]
             [clojure.string :as str]))
 
-(def order-cards {\A 0 \K 1 \Q 2 \J 3 \T 4 \9 5 \8 6 \7 7 \6 8 \5 9 \4 10 \3 11 \2 12})
-(def order-cards-2 {\A 0 \K 1 \Q 2 \T 3 \9 4 \8 5 \7 6 \6 7 \5 8 \4 9 \3 10 \2 11 \J 12})
+(def order-cards (->> (map-indexed #(vector %2 %1) "AKQJT98765432") (into {})))
+(def order-cards-2 (assoc order-cards \J 13))
 
 (defn compare-cards [dict x y] (- (get dict y) (get dict x)))
 
