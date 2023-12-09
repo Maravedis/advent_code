@@ -49,7 +49,6 @@
           (recur r h1 k1 (conj acc (last k1)))
           (recur (cons [dir (- i 1)] r) h1 k1 (conj acc (last k1))))))))
 
-(cons [[0 0]] [1 0])
 (comment 
   (count-tail-positions "2022/day9" 1)
   (count-tail-positions "2022/day9" 9))
