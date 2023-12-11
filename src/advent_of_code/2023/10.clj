@@ -1,6 +1,5 @@
 (ns advent-of-code.2023.10
-  (:require [advent-of-code.utils :as u]
-            [clojure.set :refer [difference select union]]))
+  (:require [advent-of-code.utils :as u]))
 
 ;; 0 r 
 ;; 1 d 
@@ -65,57 +64,18 @@
   (let [floor   (vec (u/read-file-list path vec))]
     (/ (count (find-loop floor)) 2)))
 
-(defn next-not-in [h w fl i o n]
-  (let [visited (union fl i o n)]
-    (first (drop-while #(visited %) (for [r (range 0 h) c (range 0 w)] [r c])))))
-
-(def close [[0 1] [1 0] [0 -1] [-1 0]])
-
-(defn neighbors [nodes h w fl]
-  (let [nexts (set (mapcat (fn [[r c]] (map (fn [[x y]] [(+ r x) (+ c y)]) close)) nodes))] 
-    (->> (difference nexts nodes fl)
-         (select (fn [[r c]] (and (<= 0 r h) (<= 0 c w)))))))
-
-(defn flood [h w fl curr]
-  (loop [result #{curr}]
-    (if-let [nexts (not-empty (neighbors result h w fl))]
-      (recur (union result nexts))
-      result)))
-
-; Not adapted to all inputs, problem being S
-(defn is-outside [floor fl nodes]
-  (loop [[r c :as curr] (first nodes)
-         start          nil
-         i              0]
-    (if (< r 0)
-      (even? i)
-      (if-let [node (get-in floor (if-let [x (fl curr)] x [-1 -1]))] 
-        (case node
-          \- (recur [(dec r) c] nil (inc i))
-          \F (recur [(dec r) c] nil (if (= start \L) i (inc i)))
-          \7 (recur [(dec r) c] nil (if (or (= start \J) (= start \S)) i (inc i)))
-          \| (recur [(dec r) c] start i)
-          (recur [(dec r) c] node i))
-        (recur [(dec r) c] nil i)))))
-
+; Shoelace algorithm + Pick theorem
 (defn part2 [path]
   (let [floor     (vec (u/read-file-list path vec))
-        h         (count floor)
-        w         (count (first floor))
-        full-loop (set (find-loop floor))]
-    (loop [curr    [0 0]
-           inside  #{}
-           outside #{}]
-      (if (nil? curr)
-        (count inside)
-        (let [nodes (flood h w full-loop curr)]
-          (if (is-outside floor full-loop nodes)
-            (recur (next-not-in h w full-loop inside outside nodes) inside (apply conj outside nodes))
-            (recur (next-not-in h w full-loop inside outside nodes) (apply conj inside nodes) outside)))))))
+        full-loop (find-loop floor)
+        [fi se]   (reduce (fn [[x y] [a b]] [(conj x a) (conj y b)]) [[] []] (partition 2 full-loop))
+        lo        (concat fi (reverse (cons (first fi) se)))]
+    (- (inc (/ (reduce (fn [res [[a b] [c d]]] (+ res (- (* a d) (* b c)))) 0 (partition 2 1 lo)) 2)) (/ (count full-loop) 2))))
 
 (comment
   (def path (u/get-input 2023 10))
+  (def tpath "2023/10_test.in")
   
-  (part1 path)
+  (part1 tpath)
   (part2 path)
   )
