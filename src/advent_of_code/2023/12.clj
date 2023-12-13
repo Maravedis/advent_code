@@ -22,21 +22,18 @@
 
 (defn part1 [path]
   (let [lines  (u/read-file-list path #(first (split % #" ")))
-        groups  (u/read-file-list path (comp vec u/nums))]
+        groups (u/read-file-list path (comp vec u/nums))]
     (apply + (pmap count-m lines groups))))
 
 (defn part2 [path]
   (let [lines  (->> (u/read-file-list path #(first (split % #" ")))
-                    (map (fn [l] (->> (cycle l)
-                                      (partition (count l))
-                                      (take 5)
-                                      (map #(apply str %))
-                                      (join "?")))))
+                    (map #(join "?" (repeat 5 %))))
         groups (->> (u/read-file-list path (comp vec u/nums))
-                    (map (fn [g] (vec (take (* 5 (count g)) (cycle g))))))]
+                    (map #(vec (apply concat (repeat 5 %)))))]
     (apply + (pmap count-m lines groups))))
 
 (comment
+  
   (def path (u/get-input 2023 12))
   (def tpath "2023/12_test.in")
 

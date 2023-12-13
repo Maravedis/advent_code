@@ -17,8 +17,8 @@
   ([resource modifier-fn]
    (let [list (slurp (io/resource resource))]
      (->> (str/split list #"\n\n")
-          (map str/split-lines)
-          (map #(map modifier-fn %))))))
+          (mapv str/split-lines)
+          (mapv #(mapv modifier-fn %))))))
 
 (defn count-if [pred coll]
   (count (keep #(when (pred %) %) coll)))
