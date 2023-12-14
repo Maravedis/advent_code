@@ -2,7 +2,7 @@
   (:require [advent-of-code.utils :as u]
             [clojure.set :refer [intersection]]))
 
-(defn check-symetry [val i]
+(defn check-symmetry [val i]
   (let [[fi se] (split-at i val)
         coll    (map = (reverse fi) se)]
     (not (some not coll))))
@@ -10,14 +10,14 @@
 (defn find-vertical [input prev]
   (let [w (count (first input))]
     (->> (map (fn [line] (set (for [i     (range 1 w)
-                                    :when (and (not= i prev) (check-symetry line i))]
+                                    :when (and (not= i prev) (check-symmetry line i))]
                                 i))) input)
          (apply intersection)
          first)))
 
 (defn find-horizontal [input prev]
   (loop [[i & t] (range 1 (count input))]
-    (if (or (nil? i) (and (check-symetry input i) (not= (* 100 i) prev)))
+    (if (or (nil? i) (and (check-symmetry input i) (not= (* 100 i) prev)))
       (and i (* 100 i))
       (recur t))))
 

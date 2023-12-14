@@ -40,15 +40,14 @@
 (defn nums [string]
   (map parse-long (re-seq #"-?\d+" string)))
 
-#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn re-pos
   "Return a list of pairs of (index, string) for all matches of `re` in `s`"
   [re s]
   (loop [m   (re-matcher re s)
-         res ()]
+         res (transient [])]
     (if (.find m)
-      (recur m (cons [(.start m) (.group m)] res))
-      (reverse res))))
+      (recur m (conj! res [(.start m) (.group m)]))
+      (rseq (persistent! res)))))
 
 (defn fix [f] (fn g [& args] (apply f g args))) ; fix inline memoization, thanks stack overflow
 
