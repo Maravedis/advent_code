@@ -19,9 +19,8 @@
             (vec (repeat 256 [])) ins)))
 
 (defn part1 [path]
-  (let [input (vec (u/read-file-list path (comp vec #(split % #","))))]
-    (->> (r/mapcat #(r/foldcat (r/map ascii-hash %)) input)
-         (r/fold +))))
+  (let [input (first (u/read-file-list path (comp vec #(split % #","))))]
+    (r/fold (int (/ (count input) 8)) + #(+ %1 (ascii-hash %2)) input)))
 
 (defn part2 [path]
   (let [boxed (first (u/read-file-list path parse))]
@@ -29,7 +28,7 @@
                  (reduce-kv (fn [r c-idx [_ len]]
                               (+ r (* (inc b-idx) (inc c-idx) len))) res content)) 0 boxed)))
 
-(comment
+(comment 
   (def path (u/get-input 2023 15))
   (part1 path)
   (part2 path)
