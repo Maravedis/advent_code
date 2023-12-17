@@ -40,6 +40,9 @@
 (defn nums [string]
   (map parse-long (re-seq #"-?\d+" string)))
 
+(defn manhattan [[x1 y1] [x2 y2]]
+  (+ (abs (- x1 x2)) (abs (- y1 y2))))
+
 (defn re-pos
   "Return a list of pairs of (index, string) for all matches of `re` in `s`"
   [re s]

@@ -7,9 +7,6 @@
           :when (reduce (fn [res row] (if (= \# (get-in input [row col])) (reduced false) res)) true (range 0 h))]
       col)))
 
-(defn manhattan [[x1 y1] [x2 y2]]
-  (+ (abs (- x1 x2)) (abs (- y1 y2))))
-
 (defn parse-galaxies [path offset]
   (let [input (vec (u/read-file-list path vec))
         e-c   (empty-cols input)
@@ -30,7 +27,7 @@
     (loop [[x & t] galaxies
            result  0]
       (if x
-        (recur t (+ result (reduce (fn [r y] (+ r (manhattan x y))) 0 t)))
+        (recur t (+ result (reduce (fn [r y] (+ r (u/manhattan x y))) 0 t)))
         result))))
 
 (comment
