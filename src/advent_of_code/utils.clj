@@ -54,6 +54,20 @@
 
 (defn fix [f] (fn g [& args] (apply f g args))) ; fix inline memoization, thanks stack overflow
 
+(defn shoelace 
+  "Given a list of vertices in the [x y] format representing a polygon, calculate the area of the polygon.
+   The list must be of contiguous points. The first and last vertices must be equal for a loop to be formed."
+  [points] 
+  (/ (abs (reduce (fn [res [[a b] [c d]]] (+ res (- (* a d) (* b c)))) 0 (partition 2 1 points))) 2))
+
+(defn area-vertices
+  "Given a list of vertices in the [x y] format representing a polygon, calculate the number of vertices in the polygon (edge included).
+    The list must be of contiguous points. The first and last vertices must be equal for a loop to be formed."
+  [points]
+  (+ 1
+     (shoelace points)
+     (/ (reduce #(+ %1 (apply manhattan %2)) 0 (partition 2 1 points)) 2)))
+
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn tee [x]
   (pprint x)

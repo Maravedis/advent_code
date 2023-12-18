@@ -76,6 +76,6 @@
   (def path (u/get-input 2023 10))
   (def tpath "2023/10_test.in")
   
-  (part1 tpath)
+  (part1 path)
   (part2 path)
   )
