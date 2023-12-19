@@ -19,37 +19,37 @@
 (defn mk-neighbors-fn [nodes]
   (let [rows (apply max (map first nodes))
         cols (apply max (map second nodes))]
-    (fn [[row col dir consecutive]]
-      (let [longest (= consecutive 2)]
+    (fn [[row col d c]]
+      (let [longest (= c 2)]
         (cond-> []
-          (and (< col cols) (not= dir 2) (not (and (= dir 0) longest))) (conj [row (inc col) 0 (if (= 0 dir) (inc consecutive) 0)])
-          (and (< row rows) (not= dir 3) (not (and (= dir 1) longest))) (conj [(inc row) col 1 (if (= 1 dir) (inc consecutive) 0)])
-          (and (< 0 col)    (not= dir 0) (not (and (= dir 2) longest))) (conj [row (dec col) 2 (if (= 2 dir) (inc consecutive) 0)])
-          (and (< 0 row)    (not= dir 1) (not (and (= dir 3) longest))) (conj [(dec row) col 3 (if (= 3 dir) (inc consecutive) 0)]))))))
+          (and (< col cols) (not= d 2) (not (and (= d 0) longest))) (conj [row (inc col) 0 (if (= 0 d) (inc c) 0)])
+          (and (< row rows) (not= d 3) (not (and (= d 1) longest))) (conj [(inc row) col 1 (if (= 1 d) (inc c) 0)])
+          (and (< 0 col)    (not= d 0) (not (and (= d 2) longest))) (conj [row (dec col) 2 (if (= 2 d) (inc c) 0)])
+          (and (< 0 row)    (not= d 1) (not (and (= d 3) longest))) (conj [(dec row) col 3 (if (= 3 d) (inc c) 0)]))))))
 
 (defn mk-neighbors-fn-2 [nodes]
   (let [rows (apply max (map first nodes))
         cols (apply max (map second nodes))]
-    (fn [[row col dir consecutive]]
-      (let [shortest (< consecutive 3)
-            longest  (= consecutive 9)]
+    (fn [[row col d c]]
+      (let [shortest (< c 3)
+            longest  (= c 9)]
         (cond-> []
           (and (< col cols) 
-               (not= dir 2)
-               (not (and (= dir 0) longest))
-               (not (and (#{1 3} dir) shortest))) (conj [row (inc col) 0 (if (= 0 dir) (inc consecutive) 0)])
+               (not= d 2)
+               (not (and (= d 0) longest))
+               (not (and (#{1 3} d) shortest))) (conj [row (inc col) 0 (if (= 0 d) (inc c) 0)])
           (and (< row rows) 
-               (not= dir 3) 
-               (not (and (= dir 1) longest))
-               (not (and (#{0 2} dir) shortest))) (conj [(inc row) col 1 (if (= 1 dir) (inc consecutive) 0)])
+               (not= d 3) 
+               (not (and (= d 1) longest))
+               (not (and (#{0 2} d) shortest))) (conj [(inc row) col 1 (if (= 1 d) (inc c) 0)])
           (and (< 0 col)
-               (not= dir 0)
-               (not (and (= dir 2) longest))
-               (not (and (#{1 3} dir) shortest))) (conj [row (dec col) 2 (if (= 2 dir) (inc consecutive) 0)])
+               (not= d 0)
+               (not (and (= d 2) longest))
+               (not (and (#{1 3} d) shortest))) (conj [row (dec col) 2 (if (= 2 d) (inc c) 0)])
           (and (< 0 row)
-               (not= dir 1)
-               (not (and (= dir 3) longest))
-               (not (and (#{0 2} dir) shortest))) (conj [(dec row) col 3 (if (= 3 dir) (inc consecutive) 0)]))))))
+               (not= d 1)
+               (not (and (= d 3) longest))
+               (not (and (#{0 2} d) shortest))) (conj [(dec row) col 3 (if (= 3 d) (inc c) 0)]))))))
 
 
 (defn ppop [v] (pop (pop v)))
