@@ -69,18 +69,21 @@
      (/ (reduce #(+ %1 (apply manhattan %2)) 0 (partition 2 1 points)) 2)))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(defn tee [x]
-  (pprint x)
-  x)
+(defn tee 
+  ([x] (pprint x) x)
+  ([file x] (with-open [w (io/writer file)] (pprint x w)) x))
 
 (defn get-input 
   ([year day] (get-input year day (slurp ".SESSION_ID")))
   ([year day session-id]
-   (->> (http/get (str "https://adventofcode.com/" year "/day/" day "/input")
-                  {:headers {:cookie (str "session=" session-id)}})
-        :body
-        (spit (str "inputs/" year "/" day ".in")))
-   (str year "/" day ".in")))
+   (let [filename (str "inputs/" year "/" day ".in")
+         file     (io/file filename)]
+     (when (not (.exists file))
+       (->> (http/get (str "https://adventofcode.com/" year "/day/" day "/input")
+                      {:headers {:cookie (str "session=" session-id)}})
+            :body
+            (spit file)))
+     (str year "/" day ".in"))))
 
 ;; Transient Functions
 
