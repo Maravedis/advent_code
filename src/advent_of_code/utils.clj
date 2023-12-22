@@ -82,4 +82,9 @@
         (spit (str "inputs/" year "/" day ".in")))
    (str year "/" day ".in")))
 
+;; Transient Functions
+
+(defn update! [xs k f & args]
+  (assoc! xs k (apply f (get xs k) args)))
+
  
