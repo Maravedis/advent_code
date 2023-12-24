@@ -14,6 +14,6 @@
                  [tesser.core "1.0.6"]
                  [org.clojure/data.priority-map "1.1.0"]] 
   :resource-paths ["resources" "inputs"]
-  :jvm-opts ["-Xss500M"]
+  :jvm-opts ["-Xss1G"]
   :profiles {:dev {:source-paths   ["test" "dev"]
                    :resource-paths ["test-inputs"]}})
