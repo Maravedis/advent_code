@@ -1,9 +1,7 @@
 (ns advent-of-code.2023.25
   (:require [advent-of-code.utils :as u]
-            [clojure.set :refer [union difference]]
-            [clojure.data.priority-map :refer [priority-map-by]])
-  (:import [org.jgrapht.alg StoerWagnerMinimumCut]
-           [org.jgrapht.graph DefaultEdge SimpleGraph]))
+            [clojure.data.priority-map :refer [priority-map-by]]
+            [clojure.set :refer [union]]))
 
 (def path (u/get-input 2023 25))
 (def tpath "2023/25_test.in")
@@ -12,80 +10,50 @@
   (let [[orig & dests] (re-seq #"\w+" line)]
     [(keyword orig) (map keyword dests)]))
 
-(defn mk-graph [connected]
-  (let [graph (SimpleGraph. DefaultEdge)]
-    (doseq [v (keys connected)]
-      (.addVertex graph v))
-    (doseq [[v dests] connected
-            dest      dests]
-      (.addEdge graph v dest))
-    graph))
-
-; Just use an external library 4head
-(defn part1-for-real [path]
-  (let [input     (into {} (u/read-file-list path parse-line))
-        connected (reduce (fn [res [orig dests]]
-                            (reduce (fn [r dest] (update r dest (fnil conj #{}) orig)) res dests)) input input)
-        graph     (mk-graph connected)
-        min-cut   (.minCut (StoerWagnerMinimumCut. graph))]
-    (* (count min-cut) (- (count (keys connected)) (count min-cut)))))
-
-(defn contract [graph v1 v2 e1 e2]
-  (let [new-v (vec (flatten [v1 v2]))]
-    (as-> graph $
-      (dissoc $ v1 v2)
-      (assoc $ new-v (remove #{v1 v2} (concat e1 e2)))
-      (reduce (fn [g v] (if (#{v1 v2} v) g (update g v #(-> (remove #{v1 v2} %) (conj new-v))))) $ e1)
-      (reduce (fn [g v] (if (#{v1 v2} v) g (update g v #(-> (remove #{v1 v2} %) (conj new-v))))) $ e2))))
-
-
-; Works, but it's  a probabilistic approach. Was my first try. And strangely it works less often than it should. Might have blundered.
-(defn karger [connected]
-  (loop [graph connected]
-    (if (= 2 (count graph)) 
-      (apply * (map #(if (coll? %) (count %) 1) (keys graph)))
-      (let  [[v1 e1] (rand-nth (seq graph))
-             v2      (rand-nth e1)
-             e2      (get graph v2)]
-        (recur (contract graph v1 v2 e1 e2))))))
-
 (defn min-cut-phase [graph]
-  (let [glen (count graph)
-        gkey (keys graph)]
-    (loop [A     #{(rand-nth gkey)}
-           nexts (get graph (first A))
-           steps 0] 
-      (if (= (count A) (- glen 2))
-        (difference (set gkey) A)
-        (let [new-A (conj A (ffirst nexts))]
-          (recur new-A (apply dissoc (merge-with + nexts (get graph (ffirst nexts))) new-A ) (inc steps)))))))
+  (let [glen  (count graph)
+        gkey  (keys graph)
+        start (rand-nth gkey)]
+    (loop [A     #{start}
+           prev  nil
+           nexts (get graph start)]
+      (if (= (count A) (- glen 1))
+        [A (first (vals nexts)) prev (ffirst nexts)]
+        (let [new-prev (ffirst nexts)
+              new-A    (conj A start)]
+          (recur new-A new-prev (apply dissoc (merge-with + nexts (get graph new-prev)) new-A)))))))
 
+(defn contract [graph s t]
+  (let [new-v (vec (flatten [s t]))
+        ns    (get graph s)
+        nt    (get graph t)]
+    (as-> graph $
+      (dissoc $ s t)
+      (assoc $ new-v (dissoc (merge-with + ns nt) s t))
+      (reduce (fn [g v] (update g v #(let [w (+ (get % s 0) (get % t 0))] (assoc (dissoc % s t) new-v w))))
+              $
+              (disj (union (set (keys ns)) (set (keys nt))) s t)))))
 
 (defn stoer-wagner [path]
-  (let [input     (into {} (u/read-file-list path parse-line))
-        graph (u/tee "out.edn" (->> (reduce (fn [res [orig dests]]
-                                              (reduce (fn [r dest] (update r dest conj orig)) res dests)) input input)
-                                    (map (fn [[k v]] [k (apply priority-map-by > (conj (vec (interpose 1 v)) 1))]))
-                                    (into {})))]
-    (time (min-cut-phase graph))))
-
-(defn part1 [path]
   (let [input (into {} (u/read-file-list path parse-line))
-        connected
-        (reduce (fn [res [orig dests]]
-                  (reduce (fn [r dest] (update r dest conj  orig)) res dests)) input input)]
-    (karger connected)))
-
+        graph (->> (reduce (fn [res [orig dests]]
+                             (reduce (fn [r dest] (update r dest conj orig)) res dests)) input input)
+                   (map (fn [[k v]] [k (apply priority-map-by > (conj (vec (interpose 1 v)) 1))]))
+                   (into {}))]
+    (loop [g graph]
+      (let [[cut cut-phase s t] (min-cut-phase g)]
+        (if (= cut-phase 3)
+          (let [c (count (flatten (seq cut)))]
+            (* c (- (count graph) c)))
+          (recur (contract g s t)))))))
 
 (comment
-  (stoer-wagner tpath)
-
-  (let [input (u/read-file-list tpath parse-line)]
-    (doseq [[orig dests] input
-            dest         dests]
-      (println (name orig) " -> " (name dest) ";")))
-  (interpose 1 [:a :b :c :d])
-
-  (part1 path)
-  (part1-for-real path)
+  (time (stoer-wagner path))
+  ((transient #{1 2 3}) 1)
+  (let [input (into {} (u/read-file-list tpath parse-line))
+        graph (->> (reduce (fn [res [orig dests]]
+                             (reduce (fn [r dest] (update r dest conj orig)) res dests)) input input)
+                   (map (fn [[k v]] [k (apply priority-map-by > (conj (vec (interpose 1 v)) 1))]))
+                   (into {}))]
+    (min-cut-phase graph))
   )
