@@ -28,17 +28,18 @@
         (dissoc :files)
         (merge leafs))))
 
-(defn sum-at-most-100000 [{:keys [value] :as fs}]
+(defn sum-at-most-100000 [{:keys [value]
+                           :as   fs}]
   (if (nil? value)
     0
-    (apply + 
+    (apply +
            (or (when (< value 100000) value) 0)
            (map sum-at-most-100000 (vals (dissoc fs :value :files))))))
 
 (defn run-first [resource]
   (->> (u/read-file-list resource #(str/split % #" "))
        (parse-fs)
-       (calc-node-value) 
+       (calc-node-value)
        (sum-at-most-100000)))
 
 (defn find-smallest-necessary [at-least acc {:keys [value]
@@ -53,10 +54,8 @@
                           (parse-fs)
                           (calc-node-value))
         space-needed (- 30000000 (- 70000000 (:value fs)))]
-    (find-smallest-necessary space-needed (Integer/MAX_VALUE) fs)))
- 
+    (find-smallest-necessary space-needed Integer/MAX_VALUE fs)))
 
 (comment
   (run-first "2022/day7")
-  (run-second "2022/day7")
-  )
+  (run-second "2022/day7"))

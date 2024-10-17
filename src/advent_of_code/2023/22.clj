@@ -9,9 +9,9 @@
         [y1 y2] ((juxt min max) y1 y2)
         [z1 z2] ((juxt min max) z1 z2)]
     (apply sorted-set (for [x (range x1 (inc x2))
-                             y (range y1 (inc y2))
-                             z (range z1 (inc z2))]
-                         [x y z]))))
+                            y (range y1 (inc y2))
+                            z (range z1 (inc z2))]
+                        [x y z]))))
 
 (defn fall [stack idx brick]
   (loop [brick brick]
