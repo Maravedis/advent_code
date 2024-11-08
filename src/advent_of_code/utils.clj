@@ -23,11 +23,37 @@
 (defn count-if [pred coll]
   (count (keep #(when (pred %) %) coll)))
 
+(def char->digit {\1 1
+                  \2 2
+                  \3 3
+                  \4 4
+                  \5 5
+                  \6 6
+                  \7 7
+                  \8 8
+                  \9 9
+                  \0 0})
 
-(def char->digit {\1 1 \2 2 \3 3 \4 4 \5 5 \6 6 \7 7 \8 8 \9 9 \0 0})
-
-(def digit-map {"one" 1 "two" 2 "three" 3 "four" 4 "five" 5 "six" 6 "seven" 7 "eight" 8 "nine" 9 "zero" 0
-                "1" 1 "2" 2 "3" 3 "4" 4 "5" 5 "6" 6 "7" 7 "8" 8 "9" 9 "0" 0})
+(def digit-map {"one"   1
+                "two"   2
+                "three" 3
+                "four"  4
+                "five"  5
+                "six"   6
+                "seven" 7
+                "eight" 8
+                "nine"  9
+                "zero"  0
+                "1"     1
+                "2"     2
+                "3"     3
+                "4"     4
+                "5"     5
+                "6"     6
+                "7"     7
+                "8"     8
+                "9"     9
+                "0"     0})
 
 (defn sum [coll]
   (apply + coll))
@@ -43,6 +69,16 @@
 (defn manhattan [[x1 y1] [x2 y2]]
   (+ (abs (- x1 x2)) (abs (- y1 y2))))
 
+(defn index-max [coll]
+  (first (reduce-kv (fn [[acc-i acc] idx value]
+                      (if (> value acc)
+                        [idx value]
+                        [acc-i acc]))
+                    [0 Integer/MIN_VALUE]
+                    (vec coll))))
+
+(index-max [0 1 10 2 3 4 5])
+
 (defn re-pos
   "Return a list of pairs of (index, string) for all matches of `re` in `s`"
   [re s]
@@ -54,10 +90,10 @@
 
 (defn fix [f] (fn g [& args] (apply f g args))) ; fix inline memoization, thanks stack overflow
 
-(defn shoelace 
+(defn shoelace
   "Given a list of vertices in the [x y] format representing a polygon, calculate the area of the polygon.
    The list must be of contiguous points. The first and last vertices must be equal for a loop to be formed."
-  [points] 
+  [points]
   (/ (abs (reduce (fn [res [[a b] [c d]]] (+ res (- (* a d) (* b c)))) 0 (partition 2 1 points))) 2))
 
 (defn area-vertices
@@ -69,11 +105,11 @@
      (/ (reduce #(+ %1 (apply manhattan %2)) 0 (partition 2 1 points)) 2)))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(defn tee 
+(defn tee
   ([x] (pprint x) x)
   ([file x] (with-open [w (io/writer file)] (pprint x w)) x))
 
-(defn get-input 
+(defn get-input
   ([year day] (get-input year day (slurp ".SESSION_ID")))
   ([year day session-id]
    (let [filename (str "inputs/" year "/" day ".in")
@@ -90,4 +126,3 @@
 (defn update! [xs k f & args]
   (assoc! xs k (apply f (get xs k) args)))
 
- 
