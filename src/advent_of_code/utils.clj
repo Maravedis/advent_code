@@ -64,7 +64,7 @@
   (->> coll (drop-while (complement pred)) (take-while pred)))
 
 (defn nums [string]
-  (map parse-long (re-seq #"-?\d+" string)))
+  (mapv parse-long (re-seq #"-?\d+" string)))
 
 (defn manhattan [[x1 y1] [x2 y2]]
   (+ (abs (- x1 x2)) (abs (- y1 y2))))
