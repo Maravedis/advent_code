@@ -2,7 +2,8 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [clj-http.client :as http]))
+            [clj-http.client :as http]
+            [com.rpl.specter :as sp]))
 
 (defn read-file-list
   ([resource] (read-file-list resource read-string))
@@ -60,6 +61,10 @@
 
 (defn dec0 [x] (max 0 (dec x)))
 
+(defn group-by-key [coll]
+  (->> (group-by first coll)
+       (sp/transform [sp/MAP-VALS] #(sp/select [sp/ALL (sp/nthpath 1)] %))))
+
 (defn between [coll pred]
   (->> coll (drop-while (complement pred)) (take-while pred)))
 
@@ -77,7 +82,9 @@
                     [0 Integer/MIN_VALUE]
                     (vec coll))))
 
-(index-max [0 1 10 2 3 4 5])
+(defn queue
+  ([] clojure.lang.PersistentQueue/EMPTY)
+  ([coll] (reduce conj clojure.lang.PersistentQueue/EMPTY coll)))
 
 (defn re-pos
   "Return a list of pairs of (index, string) for all matches of `re` in `s`"

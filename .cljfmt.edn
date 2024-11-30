@@ -3,7 +3,7 @@
  :remove-consecutive-blank-lines?       true
  :insert-missing-whitespace?            true
  :remove-multiple-non-indenting-spaces? true
- :split-keypairs-over-multiple-lines?   false
+ :split-keypairs-over-multiple-lines?   true
  :sort-ns-references                    true
  :align-associative?                    true
  :parallel?                             true}
