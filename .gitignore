@@ -5,3 +5,4 @@ test-inputs/
 src/interviews/
 test/interviews/
 .SESSION_ID
+*.rb
