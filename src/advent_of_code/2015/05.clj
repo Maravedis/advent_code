@@ -26,13 +26,12 @@
             (some (fn [[_ v]] (<= 2 (count v)))))))
 
 (defn part1 [path]
-  (u/count-if is-nice1? (u/read-file-list path identity)))
+  (u/count-when is-nice1? (u/read-file-list path identity)))
 
 (defn part2 [path]
-  (u/count-if is-nice2? (u/read-file-list path identity)))
+  (u/count-when is-nice2? (u/read-file-list path identity)))
 
 (comment
   (u/get-input 2015 5)
   (part1 "2015/5.in")
-  (part2 "2015/5.in")
-  )
+  (part2 "2015/5.in"))

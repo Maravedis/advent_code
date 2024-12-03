@@ -7,18 +7,16 @@
         [a b c d] (u/nums line)]
     [(case s "on" 0 "off" 1 2) [a b] [c d]]))
 
-
 (defn part1 [path]
   (loop [[[s [x y] [x' y'] :as h] & r] (u/read-file-list path read-instruction)
-         lights                        {}
-         ] 
+         lights                        {}]
     (if (nil? h)
-      (u/count-if (fn [[_ v]] v) lights)
+      (u/count-when (fn [[_ v]] v) lights)
       (let [f (case s
                 0 (fn [_] true)
                 1 (fn [_] false)
                 2 (fn [light] (not light)))]
-        (recur r 
+        (recur r
                (reduce (fn [acc coor] (update acc coor f)) lights (for [a (range x (inc x'))
                                                                         b (range y (inc y'))] [a b])))))))
 
@@ -38,5 +36,4 @@
 (comment
   (def path (u/get-input 2015 6))
   (part1 path)
-  (part2 path)
-  )
+  (part2 path))

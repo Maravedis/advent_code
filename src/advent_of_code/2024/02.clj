@@ -12,10 +12,10 @@
           (into (subvec report 0 i) (subvec report (inc i))))))
 
 (defn part1 [path]
-  (u/count-if safe? (u/read-file-list path u/nums)))
+  (u/count-when safe? (u/read-file-list path u/nums)))
 
 (defn part2 [path]
-  (u/count-if safe?2 (u/read-file-list path u/nums)))
+  (u/count-when safe?2 (u/read-file-list path u/nums)))
 
 (comment
   (def path (u/get-input 2024 2))

@@ -21,8 +21,8 @@
           (mapv str/split-lines)
           (mapv #(mapv modifier-fn %))))))
 
-(defn count-if [pred coll]
-  (count (keep #(when (pred %) %) coll)))
+(defn count-when [pred coll]
+  (count (filter pred coll)))
 
 (def char->digit {\1 1
                   \2 2

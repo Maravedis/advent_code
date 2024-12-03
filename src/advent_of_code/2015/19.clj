@@ -44,9 +44,9 @@
                        first
                        ->tokens)
         n         (count input)
-        rnar      (+ (u/count-if #(= "Rn" %) input)
-                     (u/count-if #(= "Ar" %) input))
-        y         (u/count-if #(= "Y" %) input)]
+        rnar      (+ (u/count-when #(= "Rn" %) input)
+                     (u/count-when #(= "Ar" %) input))
+        y         (u/count-when #(= "Y" %) input)]
     (- n rnar (* 2 y) 1)))
 
 (comment

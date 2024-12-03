@@ -18,7 +18,7 @@
     (memoize (fn [grid]
                (vec (for [r    (range 0 h)]
                       (vec (for [c    (range 0 w)
-                                 :let [n-on (u/count-if #(get-in grid %) (neighbors [r c] h w))]]
+                                 :let [n-on (u/count-when #(get-in grid %) (neighbors [r c] h w))]]
                              (or (and part2?
                                       (or (= 0 r c) (and (= h1 r) (= w1 c))
                                           (and (= r 0) (= w1 c)) (and (= h1 r) (= c 0))))
@@ -35,7 +35,7 @@
     (loop [grid input
            i    0]
       (if (>= i limit)
-        (apply + (map #(u/count-if true? %) grid))
+        (apply + (map #(u/count-when true? %) grid))
         ;; grid
         (recur
          (next-step grid)
