@@ -1,5 +1,6 @@
 (ns advent-of-code.2024.03
-  (:require [advent-of-code.utils :as u]))
+  (:require [advent-of-code.utils :as u]
+            [dom-top.core :refer [loopr]]))
 
 (defn part1 [path]
   (->> (u/read-file-list path #(re-seq #"mul\((\d{1,3}),(\d{1,3})\)" %))
@@ -7,18 +8,18 @@
        (reduce (fn [acc [_ x y]] (+ acc (* (parse-long x) (parse-long y)))) 0)))
 
 (defn part2 [path]
-  (loop [[[h1 h2 h3] & t] (->> (u/read-file-list path #(re-seq #"mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)" %))
-                               (apply concat))
-         enabled          true
-         acc              0]
-    (if (nil? h1)
-      acc
-      (if (nil? h2)
-        (recur t (= h1 "do()") acc)
-        (recur t enabled (if enabled (+ acc (* (parse-long h2) (parse-long h3))) acc))))))
+  (loopr [on true
+          acc 0]
+         [[h1 h2 h3] (->> (u/read-file-list path #(re-seq #"mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)" %))
+                          (apply concat))] 
+         (if (nil? h2)
+           (recur (= h1 "do()") acc)
+           (recur on (if on (+ acc (* (parse-long h2) (parse-long h3))) acc)))
+         acc))
 
 (comment
   (def path (u/get-input 2024 3))
   (def tpath "2024/3_test.in")
   (part1 path)
-  (part2 path))
+  (time (part2 path))
+  )

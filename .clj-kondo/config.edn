@@ -1,0 +1,2 @@
+{:linters {:unresolved-symbol {:exclude [(dom-top.core/loopr)]}
+           :invalid-arity {:skip-args [dom-top.core/loopr]}}}
