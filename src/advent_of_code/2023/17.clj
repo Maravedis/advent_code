@@ -1,5 +1,6 @@
 (ns advent-of-code.2023.17
   (:require [advent-of-code.utils :as u]
+            [advent-of-code.points :as p]
             [clojure.string :refer [split-lines]]
             [clojure.java.io :as io]
             [clojure.data.priority-map :refer [priority-map]]))
@@ -72,7 +73,7 @@
            (let [neighbors     (->> (neighbors-fn curr)
                                     (filter #(< (+ (get costs curr 10000000) (input (ppop %))) (get costs % 10000000))))
                  next-costs    (reduce #(assoc! %1 %2 (+ (get costs curr 10000000) (input (ppop %2)))) costs neighbors)
-                 next-open-set (reduce #(conj %1 %2) (pop open-set) (map #(vector % (+ (get costs % 10000000) (u/manhattan (ppop %) end))) neighbors))]
+                 next-open-set (reduce #(conj %1 %2) (pop open-set) (map #(vector % (+ (get costs % 10000000) (p/manhattan (ppop %) end))) neighbors))]
              (recur next-open-set next-costs (reduce #(conj! %1 %2) came-from (map #(vector % curr) neighbors))))))))))
 
 (defn part1 [path]

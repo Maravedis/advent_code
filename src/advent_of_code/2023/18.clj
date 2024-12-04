@@ -1,5 +1,6 @@
 (ns advent-of-code.2023.18
   (:require [advent-of-code.utils :as u]
+            [advent-of-code.points :as p]
             [clojure.string :refer [split]]))
 
 (defn parse-line [line]
@@ -23,7 +24,7 @@
                             2 [r (- c n)]
                             3 [(- r n) c])
                           t (conj! res curr))))]
-    (u/area-vertices points)))
+    (p/area-vertices points)))
 
 (defn part1 [path]
   (let [input  (u/read-file-list path parse-line)]

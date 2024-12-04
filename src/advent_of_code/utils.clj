@@ -21,8 +21,7 @@
           (mapv str/split-lines)
           (mapv #(mapv modifier-fn %))))))
 
-(defn count-when [pred coll]
-  (count (filter pred coll)))
+(def count-when (comp count filter))
 
 (def char->digit {\1 1
                   \2 2
@@ -71,9 +70,6 @@
 (defn nums [string]
   (mapv parse-long (re-seq #"-?\d+" string)))
 
-(defn manhattan [[x1 y1] [x2 y2]]
-  (+ (abs (- x1 x2)) (abs (- y1 y2))))
-
 (defn index-max [coll]
   (first (reduce-kv (fn [[acc-i acc] idx value]
                       (if (> value acc)
@@ -97,20 +93,6 @@
 
 (defn fix [f] (fn g [& args] (apply f g args))) ; fix inline memoization, thanks stack overflow
 
-(defn shoelace
-  "Given a list of vertices in the [x y] format representing a polygon, calculate the area of the polygon.
-   The list must be of contiguous points. The first and last vertices must be equal for a loop to be formed."
-  [points]
-  (/ (abs (reduce (fn [res [[a b] [c d]]] (+ res (- (* a d) (* b c)))) 0 (partition 2 1 points))) 2))
-
-(defn area-vertices
-  "Given a list of vertices in the [x y] format representing a polygon, calculate the number of vertices in the polygon (edge included).
-    The list must be of contiguous points. The first and last vertices must be equal for a loop to be formed."
-  [points]
-  (+ 1
-     (shoelace points)
-     (/ (reduce #(+ %1 (apply manhattan %2)) 0 (partition 2 1 points)) 2)))
-
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn tee
   ([x] (pprint x) x)
@@ -132,4 +114,3 @@
 
 (defn update! [xs k f & args]
   (assoc! xs k (apply f (get xs k) args)))
-

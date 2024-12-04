@@ -1,5 +1,6 @@
 (ns advent-of-code.2023.11
-  (:require [advent-of-code.utils :as u]))
+  (:require [advent-of-code.utils :as u]
+            [advent-of-code.points :as p]))
 
 (defn empty-cols [input]
   (let [h (count input)]
@@ -27,7 +28,7 @@
     (loop [[x & t] galaxies
            result  0]
       (if x
-        (recur t (+ result (reduce (fn [r y] (+ r (u/manhattan x y))) 0 t)))
+        (recur t (+ result (reduce (fn [r y] (+ r (p/manhattan x y))) 0 t)))
         result))))
 
 (comment
