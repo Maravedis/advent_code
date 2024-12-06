@@ -1,6 +1,5 @@
 (ns advent-of-code.points
-  (:require [clojure.core.reducers]
-            [clojure.core.reducers :as r]))
+  (:require [clojure.core.reducers]))
 
 (def origin [0 0])
 (def N [-1 0])

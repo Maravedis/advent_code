@@ -6,3 +6,4 @@ src/interviews/
 test/interviews/
 .SESSION_ID
 *.rb
+playground.clj
