@@ -16,7 +16,7 @@
          cur     guard
          visited (transient #{})]
     (if (not (grid cur))
-      (into #{} (map first (persistent! visited)))
+      visited
       (let [np (p/move cur dir)]
         (if (= \# (grid np))
           (if (visited [cur (rotate dir)]) :loop (recur (rotate dir) cur visited))
@@ -26,12 +26,18 @@
   (let [grid  (p/->grid (u/read-file-list path vec))
         guard (find-guard grid)]
     (->> (patrol grid guard)
+         persistent!
+         (map first)
+         set
          count)))
 
 (defn part2 [path]
   (let [grid  (p/->grid (u/read-file-list path vec))
         guard (find-guard grid)]
-    (->> (disj (patrol grid guard) guard)
+    (->> (apply disj! (patrol grid guard) (map #(vector guard %) p/cardinals))
+         persistent!
+         (map first)
+         set
          vec
          (r/fold + #(if (= :loop (patrol (assoc grid %2 \#) guard)) (inc %1) %1)))))
 
