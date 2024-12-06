@@ -1,4 +1,6 @@
-(ns advent-of-code.points)
+(ns advent-of-code.points
+  (:require [clojure.core.reducers]
+            [clojure.core.reducers :as r]))
 
 (def origin [0 0])
 (def N [-1 0])
@@ -12,9 +14,20 @@
 (def NW [-1 -1])
 (def SW [1 -1])
 
+(defn ->grid
+  "takes a 2D array and return a sorted map of {[x y] value}"
+  [input]
+  (->> (vec input)
+       (reduce-kv
+        (fn [acc r row]
+          (reduce-kv (fn [acc c v] (assoc! acc [r c] v))
+                     acc (vec row)))
+        (transient {}))
+       persistent!))
+
 (defn move
   "Given a starting point and a direction, move in that direction on a grid. If n is supplied, repeat n times."
-  ([point direction] (move point direction 1))
+  ([point direction] (mapv + point direction))
   ([point direction n] (case n
                          0 point
                          1 (mapv + point direction)
@@ -25,7 +38,7 @@
    Truncate the line if it encounters an edge"
   [grid orig direction length]
   (let [height (count grid)
-        width (count (first grid))
+        width  (count (first grid))
         coords (->> (for [l (range length)] (move orig direction l))
                     (filter (fn [[r c]] (and (< -1 r height) (< -1 c width)))))]
     (map #(get-in grid %) coords)))
