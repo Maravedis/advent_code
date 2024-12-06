@@ -13,6 +13,11 @@
 (def NW [-1 -1])
 (def SW [1 -1])
 
+(def turn-right {N E
+                 E S
+                 S W
+                 W N})
+
 (defn ->grid
   "takes a 2D array and return a sorted map of {[x y] value}"
   [input]
