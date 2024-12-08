@@ -10,12 +10,8 @@
 (def grid (p/->grid input))
 
 (defn antinodes [_ [a b] [c d]]
-  (let [xs (abs (- a c))
-        ys (abs (- b d))]
-    (cond (and (< a c) (< b d)) [[(- a xs) (- b ys)] [(+ c xs) (+ d ys)]]
-          (and (< a c) (> b d)) [[(- a xs) (+ b ys)] [(+ c xs) (- d ys)]]
-          (and (> a c) (< b d)) [[(+ a xs) (- b ys)] [(- c xs) (+ d ys)]]
-          (and (> a c) (> b d)) [[(+ a xs) (+ b ys)] [(- c xs) (- d ys)]])))
+  [[(- (* 2 a) c) (- (* 2 b) d)]
+   [(- (* 2 c) a) (- (* 2 d) b)]])
 
 (defn line [h [x1 y1] [x2 y2]]
   (let [a (/ (- y2 y1) (- x2 x1))
