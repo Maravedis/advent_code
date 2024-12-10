@@ -1,2 +1,3 @@
-{:linters {:unresolved-symbol {:exclude [(dom-top.core/loopr)]}
-           :invalid-arity {:skip-args [dom-top.core/loopr]}}}
+{:linters       {:unresolved-symbol {:exclude [(dom-top.core/loopr)]}
+                 :invalid-arity     {:skip-args [dom-top.core/loopr]}}
+ :exclude-files ["src/advent_of_code/playground.clj"]}
