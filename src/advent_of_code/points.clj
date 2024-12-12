@@ -1,5 +1,6 @@
 (ns advent-of-code.points
-  (:require [clojure.core.reducers]))
+  (:require [advent-of-code.points :as p]
+            [clojure.core.reducers :as r]))
 
 (def origin [0 0])
 (def N [-1 0])
@@ -12,11 +13,28 @@
 (def SE [1 1])
 (def NW [-1 -1])
 (def SW [1 -1])
+(def box [N E S W NE SE NW SW])
 
 (def turn-right {N E
                  E S
                  S W
                  W N})
+
+(def turn-left {N W
+                E N
+                S E
+                W S})
+
+(def turn-around {N S
+                  S N
+                  E W
+                  W E})
+
+(def dir-to-s
+  {[-1 0] "N"
+   [0 1]  "E"
+   [1 0]  "S"
+   [0 -1] "W"})
 
 (defn ->grid
   "takes a 2D array and return a sorted map of {[x y] value}"
@@ -36,6 +54,24 @@
                          0 point
                          1 (mapv + point direction)
                          (mapv + point (map #(* n %) direction)))))
+
+(defn neighbours
+  "Gives back the 4 adjacent coordinates to a point.
+   If pred is defined, keep only the points satisfying it."
+  ([point] (map #(move point %) cardinals))
+  ([point pred] (->> (r/map #(move point %) cardinals)
+                     (r/filter pred)
+                     (r/foldcat))))
+
+(defn all-points-between
+  "Given two points and a direction, gives back all the points in the line.
+   Plays fast and lose, might explode."
+  [[a b] [c d] dir]
+  (condp = dir
+    p/N (take-while #(>= (first %) c) (iterate #(p/move % dir) [a b]))
+    p/S (take-while #(<= (first %) c) (iterate #(p/move % dir) [a b]))
+    p/W (take-while #(>= (second %) d) (iterate #(p/move % dir) [a b]))
+    p/E (take-while #(<= (second %) d) (iterate #(p/move % dir) [a b]))))
 
 (defn extract-line
   "Given a 2d vector grid, extract a line of length n, from orig into direction.
