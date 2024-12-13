@@ -1,9 +1,7 @@
 (ns advent-of-code.2024.11
-  (:require
-   [advent-of-code.utils :as u]
-   [clojure.math :refer [log10 pow]]))
-
-(defn strlen [s] (inc (int (log10 s))))
+  (:require [advent-of-code.utils :as u]
+            [advent-of-code.math :refer [strlen]]
+            [clojure.math :refer [pow]]))
 
 (defn calc-stone [stone]
   (cond (= 0 stone) [1]
