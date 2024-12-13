@@ -64,7 +64,7 @@
                      (r/foldcat))))
 
 (defn all-points-between
-  "Given two points and a direction, gives back all the points in the line.
+  "Given two points and a direction, gives back all the points in the line (including those provided).
    Plays fast and lose, might explode."
   [[a b] [c d] dir]
   (condp = dir
@@ -87,6 +87,17 @@
   "Manhattan distance between two points in the [x y] format"
   [[x1 y1] [x2 y2]]
   (+ (abs (- x1 x2)) (abs (- y1 y2))))
+
+(defn flood-fill
+  "From a point in the grid, flood the grid until the neighbors don't satisfy pred anymore."
+  [grid start pred]
+  (loop [region (transient #{})
+         open   [start]]
+    (if (empty? open)
+      (persistent! region)
+      (recur (reduce conj! region open)
+             (->> (mapcat #(p/neighbours % pred) open)
+                  (remove #(or (region %) (not (grid %)))))))))
 
 (defn shoelace
   "Given a list of vertices in the [x y] format representing a polygon, calculate the area of the polygon.

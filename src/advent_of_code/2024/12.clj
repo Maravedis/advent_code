@@ -4,21 +4,13 @@
    [advent-of-code.utils :as u]
    [clojure.core.reducers :as r]))
 
-(defn fill-by-value [grid cur v]
-  (loop [region #{cur}
-         open   (p/neighbours cur #(= (grid %) v))]
-    (if (empty? open)
-      region
-      (recur (reduce conj region open)
-             (mapcat #(p/neighbours % (fn [n] (and (not (region n)) (= (grid n) v)))) region)))))
-
 (defn parse-input [path]
   (loop [regions (transient [])
          grid    (p/->grid (u/read-file-list path vec))]
     (if (empty? grid)
       (persistent! regions)
       (let [[start v]   (first grid)
-            next-region (fill-by-value grid start v)]
+            next-region (p/flood-fill grid start #(= v (grid %)))]
         (recur (conj! regions next-region)
                (apply dissoc grid next-region))))))
 
@@ -44,28 +36,17 @@
             (region (p/move curr left)) [curr left]
             :else (recur curr (p/move prev dir) (inc i))))))
 
-(defn fill-simple [point region]
-  (loop [island #{point}
-         open   (->> (p/neighbours point) (remove region) (remove island))]
-    (if (empty? open)
-      island
-      (let [next-island (apply conj island open)]
-        (recur next-island
-               (->> (mapcat #(p/neighbours %) next-island) (remove region) (remove next-island)))))))
-
 (defn calc-internal [region outer-edge]
-  (let [internals (->> (r/mapcat #(p/neighbours %) region)
-                       (r/remove region)
-                       (r/remove outer-edge)
-                       (into #{}))
-        islands   (loop [points internals
-                         acc    []]
-                    (if (empty? points)
-                      acc
-                      (let [island (fill-simple (first points) region)]
-                        (recur (apply disj points island)
-                               (conj acc island)))))]
-    islands))
+  (loop [points (->> (r/mapcat #(p/neighbours %) region)
+                     (r/remove region)
+                     (r/remove outer-edge)
+                     (into #{}))
+         acc    []]
+    (if (empty? points)
+      acc
+      (let [island (p/flood-fill points (first points) (constantly true))]
+        (recur (apply disj points island)
+               (conj acc island))))))
 
 (defn perimeter-side [region]
   (loop [acc        0
