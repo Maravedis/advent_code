@@ -1,47 +1,28 @@
 (ns advent-of-code.2015.20
-  (:require
-   [clojure.core.reducers :as r]
-   [clojure.set :as s]
-   [advent-of-code.utils :as u]))
+  (:require [clojure.math :refer [sqrt]]
+            [advent-of-code.utils :as u]))
 
-(def factors
-  (fn [x]
-    (->> (range (inc (quot x 2)) 0 -1)
-         vec
-         (r/filter #(= 0 (mod x %))))))
+(defn factors [x]
+  (->> (range 1 (int (sqrt x)))
+       (keep (fn [i] (when (= 0 (mod x i)) [i (/ x i)])))
+       flatten))
 
-(defn gifts-at [x]
-  (if (= 1 x)
-    10
-    (* 10 (+ x (r/fold + (factors x))))))
-
-(defn gifts-at-50 [x]
-  (if (= 1 x)
-    11
-    (* 11 (+ x (r/fold + (r/take 49 (factors x)))))))
-
-(defn part1 []
-  (->> (range (* 32 10000) 1000000 32)
-       (pmap #(vector (gifts-at %) %))
-       (drop-while #(< (first %) 34000000))
+(defn part1 [input]
+  (->> (iterate inc 1)
+       (pmap #(vector (* 10 (reduce + (factors %))) %))
+       (drop-while #(< (first %) input))
        first))
 
-(defn part2 []
-  (->> (range (* 32 10000) 1000000 32)
-       (pmap #(vector (gifts-at-50 %) %))
-       (drop-while #(< (first %) 34000000))
+(defn part2 [input]
+  (->> (range 1 1000000)
+       (pmap #(vector (* 11 (reduce + (filter (fn [f] (<= % (* f 50))) (factors %)))) %))
+       (drop-while #(< (first %) input))
        first))
 
 (comment
+  (def path (u/get-input 2015 20))
+  (def input (ffirst (u/read-file-list path u/nums)))
 
-  (part1)
-  (time (gifts-at 786240))
-
-  (time (gifts-at 786240))
-  (time (gifts-at-50 720720))
-
-  (time (->> (range 600000 1000000 2)
-             (pmap #(vector (gifts-at %) %))
-             (drop-while #(< (first %) 34000000))
-             first)))
+  (time (part1 input))
+  (time (part2 input)))
 
