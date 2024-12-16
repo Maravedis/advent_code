@@ -19,9 +19,8 @@
         [moved-boxes [next-non-box]] (split-with boxes (iterate #(p/move % dir) next-pos))]
     (cond (walls next-non-box) [pos boxes]
           (= next-pos next-non-box) [next-pos boxes]
-          :else
-          [next-pos (-> (disj boxes (first moved-boxes))
-                        (conj next-non-box))])))
+          :else [next-pos (-> (disj boxes (first moved-boxes))
+                              (conj next-non-box))])))
 
 (defn part1 [path]
   (let [[space ins]         (u/read-file-segmented-list path vec)
