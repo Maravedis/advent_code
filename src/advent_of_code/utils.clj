@@ -99,11 +99,12 @@
   ([file x] (with-open [w (io/writer file)] (pprint x w)) x))
 
 (defn get-input
-  ([year day] (get-input year day (slurp ".SESSION_ID")))
-  ([year day session-id]
+  ([year day] (get-input year day false (slurp ".SESSION_ID")))
+  ([year day force?] (get-input year day force? (slurp ".SESSION_ID")))
+  ([year day force? session-id]
    (let [filename (str "inputs/" year "/" day ".in")
          file     (io/file filename)]
-     (when (not (.exists file))
+     (when (or force? (not (.exists file)))
        (->> (http/get (str "https://adventofcode.com/" year "/day/" day "/input")
                       {:headers {:cookie (str "session=" session-id)}})
             :body
