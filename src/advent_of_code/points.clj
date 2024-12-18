@@ -1,6 +1,7 @@
 (ns advent-of-code.points
   (:require [advent-of-code.points :as p]
-            [clojure.core.reducers :as r]))
+            [clojure.core.reducers :as r]
+            [clojure.data.priority-map :refer [priority-map]]))
 
 (def origin [0 0])
 (def N [-1 0])
@@ -112,6 +113,33 @@
       (recur (reduce conj! region open)
              (->> (mapcat #(p/neighbours % pred) open)
                   (remove #(or (region %) (not (grid %)))))))))
+
+(defn traceback
+  "With a start, end and a map build by a pathfinding algorithm, rebuilds the path from start to end."
+  [came-from start end]
+  (if (= end start)
+    [start]
+    (conj (traceback came-from start (came-from end)) end)))
+
+(defn a-star
+  "Compute the optimal path from start to end, filtering neighbors with neighbors-pred and using heuristic-fn.
+   If only given a grid, starts and end, defaults to walls being `#` and heuristic being manhattan.
+   If no paths, returns `:blocked`. Rebuild the path with `traceback` on the result if you need it."
+  ([grid start end] (a-star start end #(when-let [v (grid %)] (not= v \#)) manhattan))
+  ([start end neighbors-pred heuristic-fn]
+   (loop [open      (priority-map start 0)
+          came-from (transient {})
+          gscore    (transient {start 0})]
+     (if-let [curr (first (peek open))]
+       (if (= end curr)
+         (persistent! came-from)
+         (let [tscore     (+ 1 (gscore curr))
+               neighbours (->> (p/neighbours curr neighbors-pred)
+                               (filter #(< tscore (gscore % Integer/MAX_VALUE))))]
+           (recur  (reduce #(apply assoc %1 %2) (pop open) (map #(vector % (+ tscore (heuristic-fn % end))) neighbours))
+                   (reduce #(apply assoc! %1 %2) came-from (map #(vector % curr) neighbours))
+                   (reduce #(apply assoc! %1 %2) gscore (map #(vector % tscore) neighbours)))))
+       :blocked))))
 
 (defn shoelace
   "Given a list of vertices in the [x y] format representing a polygon, calculate the area of the polygon.
