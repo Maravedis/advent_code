@@ -28,8 +28,8 @@
 
 (defn part2 [path]
   (let [input    (u/read-file-list path u/nums)
-        calories (u/tee (mapv last input))
-        input    (u/tee (mapv #(vec (take 4 %)) input))]
+        calories (mapv last input)
+        input    (mapv #(vec (take 4 %)) input)]
     (loop [[h & t] permutations-4
            curr    -1]
       (if (nil? h)

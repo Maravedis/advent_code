@@ -93,7 +93,6 @@
 
 (defn fix [f] (fn g [& args] (apply f g args))) ; fix inline memoization, thanks stack overflow
 
-#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn tee
   ([x] (pprint x) x)
   ([file x] (with-open [w (io/writer file)] (pprint x w)) x))
