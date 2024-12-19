@@ -29,6 +29,7 @@
 
 (comment
   (def path (u/get-input 2024 5))
+  (def tpath (u/test-path 2024 5))
 
   (time (solve path is-correct-fn (constantly identity))) ; part1
   (time (solve path (comp complement is-correct-fn) sorting-fn)) ; part2

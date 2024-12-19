@@ -15,7 +15,7 @@
 
 (comment
   (def path (u/get-input 2024 13))
-  (def tpath "2024/13_test.in")
+  (def tpath (u/test-path 2024 13))
 
   (solve path 0)
   (solve path 10000000000000))

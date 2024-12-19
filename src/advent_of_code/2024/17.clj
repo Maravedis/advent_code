@@ -65,7 +65,7 @@
 
 (comment
   (def path (u/get-input 2024 17 true))
-  (def tpath "2024/17_test.in")
+  (def tpath (u/test-path 2024 17))
 
   (time (part1 path))
   (time (part2 path)))

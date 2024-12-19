@@ -19,7 +19,7 @@
 
 (comment
   (def path (u/get-input 2024 2))
-  (def tpath "2024/2_test.in")
+  (def tpath (u/test-path 2024 2))
 
   (part1 path)
   (part1 tpath)

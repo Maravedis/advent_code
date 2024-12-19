@@ -5,7 +5,7 @@
             [criterium.core :refer [quick-bench]]))
 
 (def path (u/get-input 2024 7))
-(def tpath "2024/7_test.in")
+(def tpath (u/test-path 2024 7))
 (def input (vec (u/read-file-list path u/nums)))
 
 (defn *-1 [x y] (when (zero? (rem x y)) (quot x y)))

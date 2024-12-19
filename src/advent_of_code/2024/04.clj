@@ -16,8 +16,8 @@
 
 (defn part2 [path]
   (let [input (vec (u/read-file-list path vec))
-        w (count (first input))
-        h (count input)]
+        w     (count (first input))
+        h     (count input)]
     (reduce-kv
      (fn [acc r v]
        (reduce-kv
@@ -30,9 +30,8 @@
 
 (comment
   (def path (u/get-input 2024 4))
-  (def tpath "2024/4_test.in")
-  
+  (def tpath (u/test-path 2024 4))
+
   (part1 path)
-  (part2 path)
-  )
+  (part2 path))
 
