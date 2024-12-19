@@ -1,6 +1,5 @@
 (ns advent-of-code.2016.06
-  (:require [advent-of-code.utils :as u]
-            [advent-of-code.points :as p]))
+  (:require [advent-of-code.utils :as u]))
 
 (def path (u/get-input 2016 06))
 (def tpath (u/test-path 2016 06))
