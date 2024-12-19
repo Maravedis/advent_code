@@ -3,7 +3,8 @@
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [clj-http.client :as http]
-            [com.rpl.specter :as sp]))
+            [com.rpl.specter :as sp])
+  (:import [java.util HashMap]))
 
 (defn read-file-list
   ([resource] (read-file-list resource read-string))
@@ -92,6 +93,24 @@
       (rseq (persistent! res)))))
 
 (defn fix [f] (fn g [& args] (apply f g args))) ; fix inline memoization, thanks stack overflow
+
+(defn memoize*
+  "Faster memoize not thread safe. Uses key-fn on args for identifying the result if needed."
+  ([f] (memoize* f identity))
+  ([key-fn f]
+   (let [mem   (HashMap.)
+         guard (Object.)]
+     (fn [& args]
+       (let [k (key-fn args)
+             v (.getOrDefault mem k guard)]
+         (if (= v guard)
+           (let [ret (apply f args)]
+             (.put mem k ret) ret)
+           v))))))
+
+(defn memoize-n
+  "memoize only on the first n args of f. Not thread-safe."
+  [f n] (memoize* #(take n %) f))
 
 (defn tee
   ([x] (pprint x) x)

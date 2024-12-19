@@ -3,22 +3,23 @@
             [clojure.string :refer [starts-with?]]))
 
 (def arrangements
-  (memoize
-   (fn [patterns design curr]
+  (u/memoize-n
+   (fn [curr design patterns]
      (cond (= curr design) 1
            (>= (count curr) (count design)) 0
            (not (starts-with? design curr)) 0
-           :else (reduce + (map #(arrangements patterns design (str curr %)) patterns))))))
+           :else (reduce + (map #(arrangements (str curr %) design patterns) patterns))))
+   2))
 
 (defn part1 [path]
   (let [[[patterns] designs] (u/read-file-segmented-list path identity)
         patterns             (re-seq #"\w+" patterns)]
-    (u/count-when #(< 0 (arrangements patterns % "")) designs)))
+    (u/count-when #(< 0 (arrangements "" % patterns)) designs)))
 
 (defn part2 [path]
   (let [[[patterns] designs] (u/read-file-segmented-list path identity)
         patterns             (re-seq #"\w+" patterns)]
-    (reduce #(+ %1 (arrangements patterns %2 "")) 0 (vec designs))))
+    (reduce #(+ %1 (arrangements "" %2 patterns)) 0 (vec designs))))
 
 (comment
   (def path (u/get-input 2024 19))
