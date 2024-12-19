@@ -21,6 +21,6 @@
 
 (comment
   (def path (u/get-input 2024 11))
-  (def tpath "2024/11_test.in")
+  (def tpath (u/test-path 2024 11))
   (time (solve path 25))
   (time (solve path 75)))

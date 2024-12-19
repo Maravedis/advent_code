@@ -4,7 +4,7 @@
             [clojure.core.reducers :as r]))
 
 (def path (u/get-input 2024 6))
-(def tpath "2024/6_test.in")
+(def tpath (u/test-path 2024 6))
 
 (defn find-guard [grid]
   (ffirst (filter (fn [[_ v]] (= v \^)) grid)))

@@ -8,3 +8,5 @@ test/interviews/
 *.rb
 playground.clj
 out
+.vscode/
+

@@ -80,7 +80,7 @@
 
 (comment
   (def path (u/get-input 2024 9))
-  (def tpath "2024/9_test.in")
+  (def tpath (u/test-path 2024 9))
 
   (time (part1 path))
   (time (part2 path)))

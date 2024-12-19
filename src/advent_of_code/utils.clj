@@ -95,8 +95,8 @@
 (defn fix [f] (fn g [& args] (apply f g args))) ; fix inline memoization, thanks stack overflow
 
 (defn memoize*
-  "Faster memoize not thread safe. Uses key-fn on args for identifying the result if needed."
-  ([f] (memoize* f identity))
+  "Faster memoize not thread safe."
+  ([f] (memoize* identity f))
   ([key-fn f]
    (let [mem   (HashMap.)
          guard (Object.)]
@@ -129,7 +129,9 @@
             (spit file)))
      (str year "/" day ".in"))))
 
-(defn test-path [year day] (str year "/" day "_test.in"))
+(defn test-path [year day] (format "%d/%02d_test.in" year day))
+
+(test-path 2024 1)
 
 ;; Transient Functions
 
