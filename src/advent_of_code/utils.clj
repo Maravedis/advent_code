@@ -110,6 +110,8 @@
             (spit file)))
      (str year "/" day ".in"))))
 
+(defn test-path [year day] (str year "/" day "_test.in"))
+
 ;; Transient Functions
 
 (defn update! [xs k f & args]
