@@ -65,6 +65,11 @@
   (->> (group-by first coll)
        (sp/transform [sp/MAP-VALS] #(sp/select [sp/ALL (sp/nthpath 1)] %))))
 
+(defn transpose
+  "takes a vector of vectors and rotates it 90 degrees"
+  [matrix]
+  (apply mapv vector matrix))
+
 (defn between [coll pred]
   (->> coll (drop-while (complement pred)) (take-while pred)))
 
