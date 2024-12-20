@@ -27,8 +27,8 @@
                          (into {}))]
     (->> (r/mapcat (fn [s c]
                      (->> (jump-fn way-indexed s)
-                          (r/map #(when-let [n (way-indexed %)] (and (> n c) (- n c (p/manhattan % s)))))
-                          (r/filter identity))) way-indexed)
+                          (r/map #(let [n (way-indexed %)] (when (> n c) (- n c (p/manhattan % s)))))
+                          (r/remove nil?))) way-indexed)
          (r/filter #(>= % 100))
          (r/fold + (fn [acc _] (inc acc))))))
 
