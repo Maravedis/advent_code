@@ -64,11 +64,8 @@
 
 (defn move
   "Given a starting point and a direction, move in that direction on a grid. If n is supplied, repeat n times."
-  ([point direction] (mapv + point direction))
-  ([point direction n] (case n
-                         0 point
-                         1 (mapv + point direction)
-                         (mapv + point (map #(* n %) direction)))))
+  ([[x y] [a b]]   [(+ x a) (+ y b)])
+  ([[x y] [a b] n] [(+ x (* n a)) [+ y (* n b)]]))
 
 (defn neighbours
   "Gives back the 4 adjacent coordinates to a point.
