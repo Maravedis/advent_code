@@ -6,6 +6,14 @@
             [com.rpl.specter :as sp])
   (:import [java.util HashMap]))
 
+(defn read-file-line
+  ([resource] (read-file-line resource identity))
+  ([resource modifier-fn]
+   (->> (slurp (io/resource resource))
+        (str/split-lines)
+        first
+        modifier-fn)))
+
 (defn read-file-list
   ([resource] (read-file-list resource read-string))
   ([resource modifier-fn]
