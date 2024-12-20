@@ -2,7 +2,6 @@
   (:require [advent-of-code.utils :as u]
             [clojure.core.match :refer [match]]))
 
-#_{:clj-kondo/ignore [:unexpected-recur]}
 (defn run-program [program start]
   (loop [ip 0
          a  start
