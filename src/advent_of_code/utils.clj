@@ -129,6 +129,9 @@
   ([x] (pprint x) x)
   ([file x] (with-open [w (io/writer file)] (pprint x w)) x))
 
+(defn ftee
+  [f x] (pprint (f x)) x)
+
 (defn get-input
   ([year day] (get-input year day false (slurp ".SESSION_ID")))
   ([year day force?] (get-input year day force? (slurp ".SESSION_ID")))
