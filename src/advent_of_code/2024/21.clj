@@ -1,68 +1,40 @@
 (ns advent-of-code.2024.21
   (:require [advent-of-code.utils :as u]
+            [advent-of-code.points :as p]
             [clojure.set :refer [map-invert]]
             [clojure.string :as str]))
 
 (def path (u/get-input 2024 21))
 (def tpath (u/test-path 2024 21))
 
-(def keypad {[0 0] 7
-             [0 1] 8
-             [0 2] 9
-             [1 0] 4
-             [1 1] 5
-             [1 2] 6
-             [2 0] 1
-             [2 1] 2
-             [2 2] 3
-             [3 1] 0
-             [3 2] \A})
+(def keypad (->> [[7 8 9]
+                  [4 5 6]
+                  [1 2 3]
+                  [:deadspot 0 \A]]
+                 p/->grid
+                 map-invert))
 
-(def dapyek (map-invert keypad))
+(def dpad (->> [[:deadspot \^ \A]
+                [\< \v \>]]
+               p/->grid
+               map-invert))
 
-(def dpad {[0 1] \^
-           [0 2] \A
-           [1 0] \<
-           [1 1] \v
-           [1 2] \>})
+(defn find-sequence-grid [rgrid target-value [rs cs]]
+  (let [[re ce]     (rgrid target-value)
+        [ds-r ds-c] (rgrid :deadspot)
+        r-diff      (abs (- re rs))
+        c-diff      (abs (- ce cs))
+        horizontal  (if (> ce cs) (repeat c-diff \>) (repeat c-diff \<))
+        vertical    (if (> re rs) (repeat r-diff \v) (repeat r-diff \^))]
+    (cond-> []
+      (not (and (= ce ds-c) (= rs ds-r))) (conj (concat horizontal vertical [\A]))
+      (not (and (= re ds-r) (= cs ds-c))) (conj (concat vertical horizontal [\A])))))
 
-(def dapd (map-invert dpad))
-
-(defn find-sequence-keypad [digit [rs cs]]
-  (let [[re ce]    (dapyek digit)
-        r-diff     (abs (- re rs))
-        c-diff     (abs (- ce cs))
-        vertical   (if (< re rs) (repeat r-diff \^) (repeat r-diff \v))
-        horizontal (if (> ce cs) (repeat c-diff \>) (repeat c-diff \<))]
-    (cond-> #{}
-      (not (and (= ce 0) (= rs 3))) (conj (concat horizontal vertical [\A]))
-      (not (and (= re 3) (= cs 0))) (conj (concat vertical horizontal [\A])))))
-
-(defn find-sequence-dpad [dir [rs cs]]
-  (let [[re ce]    (dapd dir)
-        r-diff     (abs (- re rs))
-        c-diff     (abs (- ce cs))
-        horizontal (if (> ce cs) (repeat c-diff \>) (repeat c-diff \<))
-        vertical   (if (> re rs) (repeat r-diff \v) (repeat r-diff \^))]
-    (cond
-      (empty? vertical) [(concat horizontal [\A])]
-      (empty? horizontal) [(concat vertical [\A])]
-      (and (= rs 0) (= ce 0)) [(concat vertical horizontal [\A])]
-      (and (= cs 0) (= re 0)) [(concat horizontal vertical [\A])]
-      :else [(concat vertical horizontal [\A]) (concat horizontal vertical [\A])])))
-
-(defn enter-line-keypad [line]
+(defn enter-line [rgrid line]
   (->> (reduce (fn [[curr acc] h]
-                 [(dapyek h)
-                  (mapcat (fn [nm] (map #(concat % nm) acc)) (find-sequence-keypad h curr))])
-               [[3 2] #{[]}] line)
-       second))
-
-(defn enter-line-dpap [line]
-  (->> (reduce (fn [[curr acc] h]
-                 [(dapd h)
-                  (mapcat (fn [nm] (map #(concat % nm) acc)) (find-sequence-dpad h curr))])
-               [[0 2] #{[]}] line)
+                 [(rgrid h)
+                  (mapcat (fn [nm] (map #(concat % nm) acc)) (find-sequence-grid rgrid h curr))])
+               [(rgrid \A) #{[]}] line)
        second))
 
 (defn back-to-A [chunk last-char]
@@ -80,8 +52,7 @@
        (let [chunks (partition-by #{\A} line)]
          (->> (map-indexed (fn [idx chunk]
                              (if (odd? idx) (count chunk)
-                                 (->> chunk
-                                      (enter-line-dpap)
+                                 (->> (enter-line dpad chunk)
                                       (mapcat #(back-to-A % (last chunk)))
                                       (map #(to-next-line (dec depth) %))
                                       (apply min)))) chunks)
@@ -95,8 +66,7 @@
     (->> input
          (map (fn [line]
                 (let [number   (parse-long (str/join (drop-last line)))
-                      sequence (->> line
-                                    (enter-line-keypad)
+                      sequence (->> (enter-line keypad line)
                                     (map #(to-next-line depth %))
                                     (apply min))]
                   [sequence number])))
@@ -104,6 +74,5 @@
 
 (comment
 
-  ;329431019997766
-  (solve path 2)
-  (solve path 25))
+  (time (solve path 2))
+  (time (solve path 25)))
