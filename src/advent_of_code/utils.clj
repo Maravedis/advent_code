@@ -32,6 +32,19 @@
 
 (def count-when (comp count filter))
 
+(defn map-pairs
+  "Same as (map f (partition 2 1 coll)), but faster."
+  [f c] (map f c (next c)))
+
+(defn distinct-by [f coll]
+  (let [seen (atom #{})]
+    (reduce (fn [acc c]
+              (if (@seen (f c))
+                acc
+                (do
+                  (swap! seen conj (f c))
+                  (conj acc c)))) [] coll)))
+
 (def char->digit {\1 1
                   \2 2
                   \3 3
