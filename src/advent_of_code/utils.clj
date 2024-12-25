@@ -32,10 +32,6 @@
 
 (def count-when (comp count filter))
 
-(defn map-pairs
-  "Same as (map f (partition 2 1 coll)), but faster."
-  [f c] (map f c (next c)))
-
 (defn distinct-by [f coll]
   (let [seen (atom #{})]
     (reduce (fn [acc c]

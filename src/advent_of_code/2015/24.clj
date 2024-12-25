@@ -14,7 +14,7 @@
 
 (defn part2 [path]
   (let [input  (flatten (u/read-file-list path u/nums))
-        target (u/tee (/ (u/sum input) 4))]
+        target (/ (u/sum input) 4)]
     (->> (c/combinations input 4)
          (r/filter #(= target (u/sum %)))
          (r/map #(apply *' %))
