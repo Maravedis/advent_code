@@ -14,10 +14,7 @@
                    (take 1024))
         end   [70 70]]
     (-> (make-memory input)
-        (p/a-star p/origin end)
-        (p/traceback p/origin end)
-        count
-        dec)))
+        (p/a-star-score p/origin end))))
 
 (defn part2 [path]
   (let [[input blocks] (->> (u/read-file-list path u/nums)
@@ -29,7 +26,7 @@
       (if (= upper lower)
         (nth blocks upper)
         (let [memory-blocked (reduce #(assoc %1 %2 \#) memory (take upper blocks))
-              result         (p/a-star memory-blocked p/origin end)]
+              result         (p/a-star-score memory-blocked p/origin end)]
           (if (= result :blocked)
             (recur lower (quot (+ upper lower) 2))
             (recur upper (- (* 2 upper) lower))))))))

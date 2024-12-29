@@ -21,8 +21,7 @@
         grid        (p/->grid input)
         start       (ffirst (filter #(= \S (second %)) grid))
         end         (ffirst (filter #(= \E (second %)) grid))
-        way         (-> (p/a-star grid start end)
-                        (p/traceback start end))
+        way         (p/a-star grid start end)
         way-indexed (->> (map-indexed #(vector %2 %1) way)
                          (into {}))]
     (->> (r/mapcat (fn [s c]

@@ -119,22 +119,38 @@
     (conj (traceback came-from start (came-from end)) end)))
 
 (defn a-star
-  "Compute the optimal path from start to end, filtering neighbors with neighbors-pred and using heuristic-fn.
-   If only given a grid, starts and end, defaults to walls being `#` and heuristic being manhattan.
-   If no paths, returns `:blocked`. Rebuild the path with `traceback` on the result if you need it."
-  ([grid start end] (a-star start end #(when-let [v (grid %)] (not= v \#)) manhattan))
+  "Compute the optimal path from start to end, creating neighbors with neighbors-pred and using heuristic-fn.
+   If only given a grid, starts and end, defaults to neighbors being the above neightbors functions with walls `#` and heuristic being manhattan.
+   If no paths, returns `:blocked`. Rebuilds the path."
+  ([grid start end] (a-star start end (fn [p] (p/neighbours p #(when-let [v (grid %)] (not= v \#)))) manhattan))
   ([start end neighbors-pred heuristic-fn]
    (loop [open      (priority-map start 0)
           came-from (transient {})
           gscore    (transient {start 0})]
      (if-let [curr (first (peek open))]
        (if (= end curr)
-         (persistent! came-from)
+         (traceback came-from start end)
          (let [tscore     (+ 1 (gscore curr))
-               neighbours (->> (p/neighbours curr neighbors-pred)
+               neighbours (->> (neighbors-pred curr)
                                (filter #(< tscore (gscore % Integer/MAX_VALUE))))]
            (recur  (reduce #(apply assoc %1 %2) (pop open) (map #(vector % (+ tscore (heuristic-fn % end))) neighbours))
                    (reduce #(apply assoc! %1 %2) came-from (map #(vector % curr) neighbours))
+                   (reduce #(apply assoc! %1 %2) gscore (map #(vector % tscore) neighbours)))))
+       :blocked))))
+
+(defn a-star-score
+  "Same as above but only gives back the number of steps necessary between start and end."
+  ([grid start end] (a-star-score start end (fn [p] (p/neighbours p #(when-let [v (grid %)] (not= v \#)))) manhattan))
+  ([start end neighbors-pred heuristic-fn]
+   (loop [open   (priority-map start 0)
+          gscore (transient {start 0})]
+     (if-let [curr (first (peek open))]
+       (if (= end curr)
+         (gscore end)
+         (let [tscore     (+ 1 (gscore curr))
+               neighbours (->> (neighbors-pred curr)
+                               (filter #(< tscore (gscore % Integer/MAX_VALUE))))]
+           (recur  (reduce #(apply assoc %1 %2) (pop open) (map #(vector % (+ tscore (heuristic-fn % end))) neighbours))
                    (reduce #(apply assoc! %1 %2) gscore (map #(vector % tscore) neighbours)))))
        :blocked))))
 
