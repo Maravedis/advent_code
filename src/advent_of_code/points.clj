@@ -100,6 +100,18 @@
   [[x1 y1] [x2 y2]]
   (+ (abs (- x1 x2)) (abs (- y1 y2))))
 
+(defn radius-n
+  "Given a number n and a starting point, gives back all the number in radius n in manhattan distance of start and satisfying pred if given
+   Does not exclude start."
+  ([n start] (radius-n n start (constantly true)))
+  ([n [x y :as start] pred]
+   (for [r     (range (* -1 n) (inc n))
+         c     (range (* -1 n) (inc n))
+         :let  [res [(+ r x) (+ c y)]]
+         :when (and (pred start res)
+                    (<= (manhattan start res) n))]
+     res)))
+
 (defn flood-fill
   "From a point in the grid, flood the grid until the neighbors don't satisfy pred anymore."
   [grid start pred]
