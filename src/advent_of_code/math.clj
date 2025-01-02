@@ -4,8 +4,10 @@
 (defn strlen [n] (if (= n 0) 1 (inc (int (m/log10 n)))))
 
 (defn extended-euclidian
-  "Calculate the greatest common divisor of `a` and `b`, as well as their Bezout's coefficients.\n
-   Bezout identity: `xa + yb = gcd(a, b)`.\n
+  "Calculate the greatest common divisor of `a` and `b`, as well as their Bezout's coefficients.
+
+   Bezout identity: `xa + yb = gcd(a, b)`.
+
    Result is in the form `[gcd x y]`."
   [a b]
   (loop [s   0
