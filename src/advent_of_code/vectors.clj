@@ -25,6 +25,8 @@
             (= v (coll i)) i
             :else (recur (inc i))))))
 
+(defn catvec [& colls] (reduce #(into %1 %2) [] colls))
+
 (comment
 
   (rotate-left [1 2 3 4 5 6] 14)

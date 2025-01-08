@@ -36,7 +36,7 @@
       (case op
         0 (recur (v/swap-at password a b) t)
         1 (recur (v/swap-at password (v/index-of password a) (v/index-of password b)) t)
-        2 (recur (into (into (subvec password 0 a) (vec (rseq (subvec password a (inc b))))) (subvec password (inc b))) t)
+        2 (recur (v/catvec (subvec password 0 a) (rseq (subvec password a (inc b))) (subvec password (inc b))) t)
         3 (recur (v/rotate-left password a) t)
         4 (recur (v/rotate-right password a) t)
         5 (let [idx (v/index-of password a)
@@ -51,7 +51,7 @@
       (case op
         0 (recur (v/swap-at password a b) t)
         1 (recur (v/swap-at password (v/index-of password a) (v/index-of password b)) t)
-        2 (recur (into (into (subvec password 0 a) (vec (rseq (subvec password a (inc b))))) (subvec password (inc b))) t)
+        2 (recur (v/catvec (subvec password 0 a) (rseq (subvec password a (inc b))) (subvec password (inc b))) t)
         3 (recur (v/rotate-right password a) t)
         4 (recur (v/rotate-left password a) t)
         5 (let [idx (v/index-of password a)
