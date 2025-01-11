@@ -1,9 +1,7 @@
 (ns advent-of-code.2017.05
-  (:require [advent-of-code.utils :as u]
-            [advent-of-code.points :as p]))
+  (:require [advent-of-code.utils :as u]))
 
 (def path (u/get-input 2017 5))
-(def tpath (u/test-path 2017 5))
 
 (defn run [path part2?]
   (let [input (u/read-file-list path parse-long)
