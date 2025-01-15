@@ -25,7 +25,7 @@
             (= v (coll i)) i
             :else (recur (inc i))))))
 
-(defn catvec [& colls] (reduce #(into %1 %2) [] colls))
+(defn catvec [& colls] (into [] cat colls))
 
 (comment
 

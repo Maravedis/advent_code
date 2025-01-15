@@ -22,18 +22,19 @@
                                          (-> (assoc acc idx (get acc rev-idx))
                                              (assoc rev-idx (get acc idx))))) list (range (/ h 2))))))))
 
+(defn dense-knot-hash [to-hash]
+  (->> (knot-hash (catvec (map byte to-hash) [17 31 73 47 23]) 256 64)
+       (partition 16)
+       (map #(reduce bit-xor %))))
+
 (defn part1 [path size]
   (let [[a b] (knot-hash (u/read-file-line path u/nums) size 1)]
     (* a b)))
 
 (defn part2 [path]
-  (let [input       (-> (u/read-file-line path #(map byte %))
-                        (catvec [17 31 73 47 23]))]
-    (->> (knot-hash input 256 64)
-         (partition 16)
-         (map #(reduce bit-xor %))
-         (map #(format "%02x" %))
-         join)))
+  (->> (dense-knot-hash (u/read-file-line path identity))
+       (map #(format "%02x" %))
+       join))
 
 (comment
 
