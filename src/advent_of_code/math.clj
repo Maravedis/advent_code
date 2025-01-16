@@ -1,7 +1,22 @@
 (ns advent-of-code.math
   (:require [clojure.math :as m]))
 
-(defn strlen [n] (if (= n 0) 1 (inc (int (m/log10 n)))))
+(defn strlen
+  "The length of the string representation of n in base 10."
+  [n] (if (= n 0) 1 (inc (int (m/log10 n)))))
+
+(defn sum-to
+  "Sum of the integer from 0 to n."
+  [x] (/ (* (+ 1 x) x) 2))
+
+(defn quadratic-roots
+  "For a quadratic equation of the form `ax^2 + bx + c = 0`, gives back, if they exist, the possible value of x.
+   Only accounts for real numbers."
+  [a b c]
+  (let [det (- (* b b) (* 4 a c))]
+    (when (and (>= det 0) (not= 0 a))
+      [(/ (+ (* -1 b) (m/sqrt det)) (* 2 a))
+       (/ (- (* -1 b) (m/sqrt det)) (* 2 a))])))
 
 (defn extended-euclidian
   "Calculate the greatest common divisor of `a` and `b`, as well as their Bezout's coefficients.
