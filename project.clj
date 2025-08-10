@@ -15,10 +15,16 @@
                  [org.clojure/data.priority-map "1.2.0"]
                  [net.mikera/core.matrix "0.63.0"]
                  [net.mikera/vectorz-clj "0.48.0"]
-                 [com.microsoft/z3 "4.12.4"]
+                 [com.microsoft/z3 "4.15.2"]
                  [org.jgrapht/jgrapht-core "1.5.2"]
                  [dom-top "1.0.9"]]
   :resource-paths ["resources" "inputs"]
-  :jvm-opts ["-Xss1G" "-Djava.library.path=/home/clement/Projects/z3/build"]
+  :jvm-opts ["-Xss1G"]
   :profiles {:dev {:source-paths   ["test" "dev"]
                    :resource-paths ["test-inputs"]}})
+
+; To install z3:
+; clone https://github.com/Z3Prover/z3
+; run: `python scripts/mk_make.py --java`, then `cd build; make`, then `sudo make install`
+; then install into local maven:
+; mvn install:install-file -Dfile=/usr/lib/com.microsoft.z3.jar -DgroupId=com.microsoft -DartifactId=z3 -Dversion=4.15.2 -Dpackaging=jar -DgeneratePom=true
