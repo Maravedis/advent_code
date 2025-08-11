@@ -43,7 +43,7 @@
                  \< p/W})
 
 (defn ->grid
-  "takes a 2D array and return a sorted map of {[x y] value}"
+  "takes a 2D array and return a map of {[x y] value}"
   [input]
   (->> (vec input)
        (reduce-kv
