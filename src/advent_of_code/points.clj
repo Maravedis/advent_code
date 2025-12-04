@@ -80,6 +80,14 @@
                      (r/filter pred)
                      (r/foldcat))))
 
+(defn neighbours-box
+  "Gives back the 8 coordinates around a point.
+   If pred is defined, keep only the points satisfying it."
+  ([point] (map #(move point %) box))
+  ([point pred] (->> (r/map #(move point %) box)
+                     (r/filter pred)
+                     (r/foldcat))))
+
 (defn all-points-between
   "Given two points and a direction, gives back all the points in the line (including those provided).
    Plays fast and lose, might explode."
